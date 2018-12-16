@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">AssApp</string>
+    //NavigationView
+    <string name="company_name">Assurant</string>
+    <string name="aboutUs">About Us</string>
+    <string name="my_insurance">Mis Seguros</string>
+    <string name="login">Iniciar Sesión</string>
+    <string name="logout">Salir</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+
+
+</resources>

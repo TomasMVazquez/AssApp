@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "11814129782",
+    "firebase_url": "https://assapp-a3083.firebaseio.com",
+    "project_id": "assapp-a3083",
+    "storage_bucket": "assapp-a3083.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:11814129782:android:b50aa8e21c5ba0c3",
+        "android_client_info": {
+          "package_name": "com.example.toms.assapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "11814129782-qj4r2i5q2af8vda3fe9cke1dujt0kivm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.toms.assapp",
+            "certificate_hash": "68528757a6bdd69d734e4e2ae217664e4cdc4871"
+          }
+        },
+        {
+          "client_id": "11814129782-ig59e7gh591rjpbsi0iqq0i67mf18vba.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBChI41UgkVdn0jxVrBrVj9K8Qx_69OL1g"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "11814129782-ig59e7gh591rjpbsi0iqq0i67mf18vba.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
