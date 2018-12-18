@@ -1,14 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.fragments.AddInsuranceFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/transparencia"
+    >
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent">
 
-</FrameLayout>
+        <LinearLayout
+            android:layout_margin="6dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/title_fragment_add"
+                android:gravity="center"
+                android:textSize="25sp"
+                android:textColor="@color/colorAccentOrange"
+                android:textStyle="bold"
+                android:layout_marginBottom="5dp"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="25dp"
+                >
+                <ImageView
+                    android:id="@+id/image_one"
+                    android:layout_weight="25"
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/logo_solo"
+                    android:scaleType="centerCrop"
+                    />
+                <ImageView
+                    android:id="@+id/image_two"
+                    android:layout_weight="25"
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:layout_marginBottom="25dp"
+                    android:src="@drawable/logo_solo"
+                    android:scaleType="centerCrop"
+                    />
+                <ImageView
+                    android:id="@+id/image_threee"
+                    android:layout_weight="25"
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/logo_solo"
+                    android:scaleType="centerCrop"
+                    />
+                <ImageView
+                    android:id="@+id/image_four"
+                    android:layout_weight="25"
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/logo_solo"
+                    android:scaleType="centerCrop"
+                    />
+            </LinearLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/add"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                >
+                <EditText
+                    android:id="@+id/addTitulo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint=""
+                    android:inputType="textCapWords"
+                    />
+            </android.support.design.widget.TextInputLayout>
+
+            <TextView
+                android:id="@+id/ingredientesAgregados"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textColor="@color/colorPrimaryDark"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="100"
+                android:orientation="horizontal"
+                >
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/addIngredientesTextLayout"
+                    android:layout_width="0dp"
+                    android:layout_weight="98"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
+                    >
+                    <EditText
+                        android:id="@+id/addIngredientes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint=""
+                        android:inputType="textCapSentences"
+                        />
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/addProcedimientoTextLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                >
+                <EditText
+                    android:id="@+id/addProcedimiento"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint=""
+                    android:inputType="textCapSentences"
+                    />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/agregarReceta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="16dp"
+                app:fabSize="normal"
+                android:src="@drawable/ic_check_black_24dp"
+                app:maxImageSize="36dp"
+                />
+        </LinearLayout>
+    </ScrollView>
+</android.support.design.widget.CoordinatorLayout>
