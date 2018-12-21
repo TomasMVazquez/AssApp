@@ -14,9 +14,7 @@ import android.view.Gravity;
 import android.view.MenuItem;
 
 import com.example.toms.assapp.R;
-import com.example.toms.assapp.view.fragments.MisSegurosFragment;
-import com.facebook.login.LoginManager;
-import com.google.firebase.auth.FirebaseAuth;
+import com.example.toms.assapp.view.fragments.MyInsuranceFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,8 +55,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        MisSegurosFragment misSegurosFragment = new MisSegurosFragment();
-        cargarFragment(misSegurosFragment);
+        
+        MyInsuranceFragment myInsuranceFragment = new MyInsuranceFragment();
+        cargarFragment(myInsuranceFragment);
 
     }
 

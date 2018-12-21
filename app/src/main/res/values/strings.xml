@@ -10,6 +10,11 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     //Fragment Add
-    <string name="title_fragment_add">Mis dispositivos</string>
+    <string name="title_fragment_add">Agregar dispositivo</string>
+    <string name="photos_fragment_add">Fotos de mi dispositivo</string>
+    <string name="name_fragment_add">Nombre de mi dispositivo</string>
+    <string name="sales_date_fragment_add">Fecha de compra</string>
+    <string name="make_fragment_add">Marca</string>
+    <string name="model_fragment_add">Modelo</string>
 
 </resources>
