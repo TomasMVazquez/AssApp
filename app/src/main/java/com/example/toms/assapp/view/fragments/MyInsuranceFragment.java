@@ -19,6 +19,7 @@ import com.example.toms.assapp.view.AddNewDevice;
  */
 public class MyInsuranceFragment extends Fragment {
 
+    public static final int KEY_ADD_DEVICE = 201;
 
     public MyInsuranceFragment() {
         // Required empty public constructor
@@ -41,7 +42,7 @@ public class MyInsuranceFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(view.getContext(),AddNewDevice.class);
-                startActivityForResult(i,1);
+                startActivityForResult(i,KEY_ADD_DEVICE);
             }
         });
 
@@ -51,15 +52,8 @@ public class MyInsuranceFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK){
-            switch (requestCode){
-                case 1:
-
-                    Toast.makeText(getActivity(), "Funciona" + requestCode, Toast.LENGTH_SHORT).show();
-
-                    break;
-
-            }
+        if (resultCode == Activity.RESULT_OK && requestCode == KEY_ADD_DEVICE){
+            Toast.makeText(getActivity(), "Funciona" + requestCode, Toast.LENGTH_SHORT).show();
         }
 
     }

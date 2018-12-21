@@ -17,4 +17,11 @@
     <string name="make_fragment_add">Marca</string>
     <string name="model_fragment_add">Modelo</string>
 
+    //LogIn
+    <string name="welcome_login">Bienvenidos a Assurant APP</string>
+    <string name="choose_login">Elige como ingresar:</string>
+    //Facebook
+    <string name="facebook_app_id">292033288323458</string>
+    <string name="fb_login_protocol_scheme">fb292033288323458</string>
+
 </resources>

@@ -4,8 +4,8 @@
 
     <item android:id="@+id/login_toolbar"
         android:icon="@drawable/ic_person_black_24dp"
-        android:title="Item Search"
-        app:showAsAction="ifRoom|collapseActionView"
-        app:actionViewClass='android.support.v7.widget.SearchView'/>
+        android:title="@string/login"
+        app:showAsAction="always"
+        />
 
 </menu>
