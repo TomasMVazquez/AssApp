@@ -26,6 +26,7 @@ import com.example.toms.assapp.view.fragments.MyInsuranceFragment;
 public class MainActivity extends AppCompatActivity {
 
     public static final int KEY_LOGIN=101;
+    public static final String KEY_NAME = "name";
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
@@ -119,11 +120,11 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent,KEY_LOGIN);
     }
 
-    public static Intent respuestaLogin(){
+    public static Intent respuestaLogin(String name){
         Intent intent = new Intent();
-//        Bundle bundle = new Bundle();
-//        bundle.putString(KEY_TEXTO, texto);
-//        intent.putExtras(bundle);
+        Bundle bundle = new Bundle();
+        bundle.putString(KEY_NAME, name);
+        intent.putExtras(bundle);
         return intent;
     }
 
@@ -135,6 +136,9 @@ public class MainActivity extends AppCompatActivity {
             switch (requestCode){
                 case KEY_LOGIN:
                     navigationView.getMenu().findItem(R.id.login).setTitle(getResources().getString(R.string.logout));
+                    Bundle bundle = data.getExtras();
+                    String name = bundle.getString(KEY_NAME);
+                    Toast.makeText(this, name, Toast.LENGTH_SHORT).show();
                     break;
 
             }
