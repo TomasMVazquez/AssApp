@@ -30,12 +30,13 @@ public class LogInActivity extends AppCompatActivity {
 
     private CallbackManager callbackManager;
     private FirebaseAuth mAuth;
+    private FirebaseUser currentUser;
 
     @Override
     protected void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
     }
 
@@ -56,9 +57,6 @@ public class LogInActivity extends AppCompatActivity {
             public void onSuccess(LoginResult loginResult) {
                 // App code
                 handleFacebookAccessToken(loginResult.getAccessToken());
-                Intent data = MainActivity.respuestaLogin(mAuth.getCurrentUser().getDisplayName());
-                setResult(Activity.RESULT_OK,data);
-                finish();
             }
 
             @Override
@@ -72,6 +70,13 @@ public class LogInActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (currentUser != null) {
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -90,6 +95,9 @@ public class LogInActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
+                            Intent data = MainActivity.respuestaLogin(user.getDisplayName());
+                            setResult(Activity.RESULT_OK,data);
+                            finish();
                         } else {
                             // If sign in fails, display a message to the user.
                             updateUI(null);

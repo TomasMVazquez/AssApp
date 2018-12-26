@@ -6,6 +6,7 @@ public class Device {
 
     //Atributos
     private Integer id;
+    private String typeDevice;
     private String name;
     private String make;
     private String model;
@@ -18,8 +19,9 @@ public class Device {
     public Device() {
     }
 
-    public Device(Integer id, String name, String make, String model, String salesDate, List<String> photoList, Boolean insured) {
+    public Device(Integer id, String typeDevice, String name, String make, String model, String salesDate, List<String> photoList, Boolean insured) {
         this.id = id;
+        this.typeDevice = typeDevice;
         this.name = name;
         this.make = make;
         this.model = model;
@@ -29,6 +31,11 @@ public class Device {
     }
 
     //getter
+
+    public String getTypeDevice() {
+        return typeDevice;
+    }
+
     public Boolean getInsured() {
         return insured;
     }

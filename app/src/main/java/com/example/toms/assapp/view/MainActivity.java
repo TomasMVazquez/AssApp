@@ -2,6 +2,7 @@ package com.example.toms.assapp.view;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -22,6 +23,9 @@ import android.widget.Toast;
 import com.example.toms.assapp.R;
 import com.example.toms.assapp.util.Util;
 import com.example.toms.assapp.view.fragments.MyInsuranceFragment;
+import com.facebook.login.LoginManager;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,10 +35,22 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
 
+    private FirebaseAuth mAuth;
+    private FirebaseUser currentUser;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        currentUser = mAuth.getCurrentUser();
+        updateUI(currentUser);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mAuth = FirebaseAuth.getInstance();
 
         Util.printHash(this);
 
@@ -69,10 +85,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-        MyInsuranceFragment myInsuranceFragment = new MyInsuranceFragment();
-        cargarFragment(myInsuranceFragment);
-
     }
 
     //Inflar Menu para ver el boton de ir al Login
@@ -88,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.login_toolbar:
-                goLogIn();
+                Toast.makeText(this, "Aca hay que poner Activity de my profile", Toast.LENGTH_SHORT).show();
                 return true;
 
             default:
@@ -116,10 +128,19 @@ public class MainActivity extends AppCompatActivity {
 
     //Ir al Login
     public void goLogIn(){
-        Intent intent = new Intent(MainActivity.this,LogInActivity.class);
-        startActivityForResult(intent,KEY_LOGIN);
+        if (currentUser!=null){
+            FirebaseAuth.getInstance().signOut();
+            LoginManager.getInstance().logOut();
+            currentUser = null;
+            updateUI(currentUser);
+            Toast.makeText(this, "Has salido de tu sesion", Toast.LENGTH_SHORT).show();
+        }else {
+            Intent intent = new Intent(MainActivity.this, LogInActivity.class);
+            startActivityForResult(intent, KEY_LOGIN);
+        }
     }
 
+    //Lo que envia el login en el activity for result
     public static Intent respuestaLogin(String name){
         Intent intent = new Intent();
         Bundle bundle = new Bundle();
@@ -135,7 +156,6 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == Activity.RESULT_OK){
             switch (requestCode){
                 case KEY_LOGIN:
-                    navigationView.getMenu().findItem(R.id.login).setTitle(getResources().getString(R.string.logout));
                     Bundle bundle = data.getExtras();
                     String name = bundle.getString(KEY_NAME);
                     Toast.makeText(this, name, Toast.LENGTH_SHORT).show();
@@ -144,5 +164,19 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+    }
+
+    //Actualizar experiencia de usuario
+    public void updateUI(FirebaseUser user){
+        if (user != null) {
+            navigationView.getMenu().findItem(R.id.login).setTitle(getResources().getString(R.string.logout));
+            String name = user.getDisplayName();
+            Uri uri = user.getPhotoUrl();
+            MyInsuranceFragment myInsuranceFragment = new MyInsuranceFragment();
+            cargarFragment(myInsuranceFragment);
+        }else {
+            navigationView.getMenu().findItem(R.id.login).setTitle(getResources().getString(R.string.login));
+            goLogIn();
+        }
     }
 }

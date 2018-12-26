@@ -44,7 +44,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.AddNewDevice" />
+        <activity android:name=".view.AddNewDevice"
+            android:windowSoftInputMode="stateHidden"
+            />
         <activity android:name=".view.LogInActivity">
 
         </activity>
