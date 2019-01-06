@@ -7,10 +7,10 @@ public class Device {
     //Atributos
     private Integer id;
     private String typeDevice;
+    private String salesDate;
     private String name;
     private String make;
     private String model;
-    private String salesDate;
     private List<String> photoList;
     private Boolean insured;
 

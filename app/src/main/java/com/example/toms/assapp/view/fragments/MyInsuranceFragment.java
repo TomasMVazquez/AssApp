@@ -35,8 +35,6 @@ public class MyInsuranceFragment extends Fragment {
         //Views
         FloatingActionButton fabAddInsurance = view.findViewById(R.id.fabAddInsurance);
 
-
-
         //actions
         fabAddInsurance.setOnClickListener(new View.OnClickListener() {
             @Override

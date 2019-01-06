@@ -11,11 +11,20 @@
 
     //Fragment Add
     <string name="title_fragment_add">Agregar dispositivo</string>
+    <string name="spinner_title">Tipo de dispositivo</string>
     <string name="photos_fragment_add">Fotos de mi dispositivo</string>
     <string name="name_fragment_add">Nombre de mi dispositivo</string>
+    <string name="request_invoice">Confirmo que poseo la factura de compra</string>
+    <string name="photo_invoice">Foto de mi factura de compra</string>
     <string name="sales_date_fragment_add">Fecha de compra</string>
     <string name="make_fragment_add">Marca</string>
     <string name="model_fragment_add">Modelo</string>
+    <string name="sales_date_error">La fecha de compra no puede superar el año</string>
+    <string name="error_not_invoice_checked">Recuerde que necesita la factura de compra para asegurar su equipo</string>
+    <string name="error_not_device_choosen">Recuerde que debe seleccionar el tipo de dispositivo</string>
+    <string name="error_not_sales_date">Recuerde que debe ingresar la fecha de compra del dispositivo</string>
+    <string name="error_not_photo">Aún faltan fotos</string>
+
 
     //LogIn
     <string name="welcome_login">Bienvenidos a Assurant APP</string>

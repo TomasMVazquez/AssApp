@@ -168,15 +168,18 @@ public class MainActivity extends AppCompatActivity {
 
     //Actualizar experiencia de usuario
     public void updateUI(FirebaseUser user){
+        //Call fragment to add new devices
+        MyInsuranceFragment myInsuranceFragment = new MyInsuranceFragment();
+        cargarFragment(myInsuranceFragment);
+
         if (user != null) {
             navigationView.getMenu().findItem(R.id.login).setTitle(getResources().getString(R.string.logout));
             String name = user.getDisplayName();
             Uri uri = user.getPhotoUrl();
-            MyInsuranceFragment myInsuranceFragment = new MyInsuranceFragment();
-            cargarFragment(myInsuranceFragment);
         }else {
             navigationView.getMenu().findItem(R.id.login).setTitle(getResources().getString(R.string.login));
-            goLogIn();
+            //Commenting log in when starting cause the client wants the customer to be able to add device to see the pricing
+            //goLogIn();
         }
     }
 }
