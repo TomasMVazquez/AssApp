@@ -29,6 +29,11 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.toms.assapp.R;
+import com.example.toms.assapp.model.Device;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.text.ParseException;
@@ -47,12 +52,18 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
     public static final int KEY_CAMERA_THREE=303;
     public static final int KEY_CAMERA_FOUR=304;
 
+    private FirebaseDatabase mDatabase;
+    private DatabaseReference mReference;
+    private FirebaseStorage mStorage;
+    private List<String> photoList;
+
     private ImageView imageOne;
     private ImageView imageTwo;
     private ImageView imageThree;
     private ImageView imageFour;
 
     private Spinner spinnerSelectTypeDevice;
+    private String deviceType;
     private static EditText addSalesDate;
     private static EditText addName;
     private static TextInputLayout addTextInputSalesDate;
@@ -64,6 +75,15 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_device);
+
+        //firebase
+        mDatabase = FirebaseDatabase.getInstance();
+        mReference  = mDatabase.getReference();
+        //Gerente
+        mStorage = FirebaseStorage.getInstance();
+        //Raiz del Storage
+        StorageReference raiz = mStorage.getReference();
+
 
         //Views
         Button fabAddDevice = findViewById(R.id.fabAddDevice);
@@ -80,7 +100,7 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
         addName = findViewById(R.id.addDeviceName);
         addSalesDate = findViewById(R.id.addSalesDate);
         final EditText addMake = findViewById(R.id.addMake);
-        EditText addModel = findViewById(R.id.addModel);
+        final EditText addModel = findViewById(R.id.addModel);
         switchInvoice = findViewById(R.id.switchInvoice);
         textViewInvoiceTitle = findViewById(R.id.textViewInvoiceTitle);
         cardViewImageOne = findViewById(R.id.cardViewImageOne);
@@ -155,6 +175,11 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void onClick(View v) {
                 if (checkInfo()) {
+                    Device newDevice = new Device("",deviceType,addName.getText().toString(),
+                            addMake.getText().toString(),addModel.getText().toString(),addSalesDate.getText().toString(),
+                            photoList,false);
+                    addDeviceToDataBase(newDevice);
+
                     setResult(Activity.RESULT_OK);
                     finish();
                 }
@@ -163,6 +188,7 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
+    //Button addDevice
     public boolean checkInfo(){
         if (spinnerSelectTypeDevice.getSelectedItemPosition()==0){
             Toast.makeText(this, getResources().getString(R.string.error_not_device_choosen), Toast.LENGTH_SHORT).show();
@@ -182,6 +208,7 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
         return true;
     }
 
+    //Activity for Result
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -224,9 +251,11 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
+    //Spinner
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (position!=0){
+            deviceType = parent.getItemAtPosition(position).toString();
             Toast.makeText(this, parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
         }
     }
@@ -289,6 +318,7 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
         newFragment.show(getSupportFragmentManager(), "datePicker");
     }
 
+    //Switch
     public void invoiceChecked(){
         if (switchInvoice.isChecked()){
             textViewInvoiceTitle.setVisibility(View.VISIBLE);
@@ -304,4 +334,16 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
             imageOne.setVisibility(View.GONE);
         }
     }
+
+    //Add to Database Firebase
+    public void addDeviceToDataBase(Device device){
+        String idReferenceGuest = "guest" + (new Date()).toString();
+        DatabaseReference idDevices = mReference.child(idReferenceGuest).child(getResources().getString(R.string.device_reference_child)).push();
+        String idDataBase = idDevices.getKey();
+        device.setId(idDataBase);
+
+        idDevices.setValue(new Device(device.getId(),device.getTypeDevice(),device.getName(),device.getMake(),device.getModel()
+                ,device.getSalesDate(),device.getPhotoList(),device.getInsured()));
+    }
+
 }

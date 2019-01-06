@@ -25,6 +25,8 @@
     <string name="error_not_sales_date">Recuerde que debe ingresar la fecha de compra del dispositivo</string>
     <string name="error_not_photo">Aún faltan fotos</string>
 
+    //Database
+    <string name="device_reference_child">myDevice</string>
 
     //LogIn
     <string name="welcome_login">Bienvenidos a Assurant APP</string>

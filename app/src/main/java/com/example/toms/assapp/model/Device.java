@@ -5,7 +5,7 @@ import java.util.List;
 public class Device {
 
     //Atributos
-    private Integer id;
+    private String id;
     private String typeDevice;
     private String salesDate;
     private String name;
@@ -19,7 +19,7 @@ public class Device {
     public Device() {
     }
 
-    public Device(Integer id, String typeDevice, String name, String make, String model, String salesDate, List<String> photoList, Boolean insured) {
+    public Device(String id, String typeDevice, String name, String make, String model, String salesDate, List<String> photoList, Boolean insured) {
         this.id = id;
         this.typeDevice = typeDevice;
         this.name = name;
@@ -52,7 +52,7 @@ public class Device {
         return model;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
@@ -77,5 +77,10 @@ public class Device {
                 ", photoList=" + photoList +
                 ", insured=" + insured +
                 '}';
+    }
+
+    //Setter ID
+    public void setId(String id) {
+        this.id = id;
     }
 }
