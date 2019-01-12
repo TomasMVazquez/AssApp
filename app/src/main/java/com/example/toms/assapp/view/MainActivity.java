@@ -18,6 +18,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.toms.assapp.R;
@@ -26,8 +27,12 @@ import com.example.toms.assapp.view.fragments.MyInsuranceFragment;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MyInsuranceFragment.OnFragmentFormNotify {
 
     public static final int KEY_LOGIN=101;
     public static final String KEY_NAME = "name";
@@ -37,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
+
+    private static String idGuest;
 
     @Override
     protected void onStart() {
@@ -182,4 +189,30 @@ public class MainActivity extends AppCompatActivity {
             //goLogIn();
         }
     }
+
+    //Al salir de la app destruir la base de datos del guest
+    @Override
+    protected void onDestroy() {
+        if (idGuest!=null){
+            FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+            DatabaseReference mReference = mDatabase.getReference();
+            FirebaseStorage mStorage = FirebaseStorage.getInstance();
+            StorageReference raiz = mStorage.getReference();
+
+            mReference.child(idGuest).removeValue();
+        }
+
+        super.onDestroy();
+    }
+
+    @Override
+    public void showIdGuest(String id) {
+        idGuest = id;
+        Toast.makeText(this, id, Toast.LENGTH_SHORT).show();
+    }
+
+    public static String showId(){
+        return idGuest;
+    }
 }
+

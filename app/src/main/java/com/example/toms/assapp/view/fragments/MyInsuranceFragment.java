@@ -9,10 +9,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.toms.assapp.R;
 import com.example.toms.assapp.view.AddNewDevice;
+import com.example.toms.assapp.view.MainActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -20,6 +22,9 @@ import com.example.toms.assapp.view.AddNewDevice;
 public class MyInsuranceFragment extends Fragment {
 
     public static final int KEY_ADD_DEVICE = 201;
+    public static final String KEY_ID_GUEST = "guest";
+
+    private String idGuest;
 
     public MyInsuranceFragment() {
         // Required empty public constructor
@@ -35,11 +40,16 @@ public class MyInsuranceFragment extends Fragment {
         //Views
         FloatingActionButton fabAddInsurance = view.findViewById(R.id.fabAddInsurance);
 
+        idGuest = MainActivity.showId();
+
         //actions
         fabAddInsurance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(view.getContext(),AddNewDevice.class);
+                Bundle bundle = new Bundle();
+                bundle.putString(AddNewDevice.KEY_ID_GUEST, idGuest);
+                i.putExtras(bundle);
                 startActivityForResult(i,KEY_ADD_DEVICE);
             }
         });
@@ -51,10 +61,30 @@ public class MyInsuranceFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK && requestCode == KEY_ADD_DEVICE){
-            Toast.makeText(getActivity(), "Funciona" + requestCode, Toast.LENGTH_SHORT).show();
-        }
 
+        if (resultCode == Activity.RESULT_OK && requestCode == KEY_ADD_DEVICE){
+            Bundle bundle = data.getExtras();
+            idGuest = bundle.getString(KEY_ID_GUEST);
+
+            if (idGuest != null){
+                OnFragmentFormNotify onFragmentFormNotify= (OnFragmentFormNotify) getContext();
+                onFragmentFormNotify.showIdGuest(idGuest);
+            }
+        }
+    }
+
+
+    //the guest id of the database
+    public static Intent dataBaseId(String id){
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putString(KEY_ID_GUEST, id);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public interface OnFragmentFormNotify{
+        public void showIdGuest(String id);
     }
 
 }

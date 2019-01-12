@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.toms.assapp.R;
 import com.example.toms.assapp.model.Device;
+import com.example.toms.assapp.view.fragments.MyInsuranceFragment;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -47,6 +48,7 @@ import pl.aprilapps.easyphotopicker.EasyImage;
 
 public class AddNewDevice extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
+    public static final String KEY_ID_GUEST = "guest";
     public static final int KEY_CAMERA_ONE=301;
     public static final int KEY_CAMERA_TWO=302;
     public static final int KEY_CAMERA_THREE=303;
@@ -56,6 +58,7 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
     private DatabaseReference mReference;
     private FirebaseStorage mStorage;
     private List<String> photoList;
+    private String idReferenceGuest;
 
     private ImageView imageOne;
     private ImageView imageTwo;
@@ -84,10 +87,15 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
         //Raiz del Storage
         StorageReference raiz = mStorage.getReference();
 
+        //bundle
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        if (bundle.getString(KEY_ID_GUEST)!=null) {
+            idReferenceGuest = bundle.getString(KEY_ID_GUEST);
+        }
 
         //Views
         Button fabAddDevice = findViewById(R.id.fabAddDevice);
-//        FloatingActionButton fabAddImage = findViewById(R.id.fabAddImage);
         spinnerSelectTypeDevice = findViewById(R.id.spinnerSelectTypeDevice);
         imageOne = findViewById(R.id.image_one);
         imageTwo = findViewById(R.id.image_two);
@@ -180,7 +188,8 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
                             photoList,false);
                     addDeviceToDataBase(newDevice);
 
-                    setResult(Activity.RESULT_OK);
+                    Intent data = MyInsuranceFragment.dataBaseId(idReferenceGuest);
+                    setResult(Activity.RESULT_OK,data);
                     finish();
                 }
             }
@@ -337,8 +346,14 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
 
     //Add to Database Firebase
     public void addDeviceToDataBase(Device device){
-        String idReferenceGuest = "guest" + (new Date()).toString();
-        DatabaseReference idDevices = mReference.child(idReferenceGuest).child(getResources().getString(R.string.device_reference_child)).push();
+        DatabaseReference idDevices;
+        if (idReferenceGuest==null){
+            idReferenceGuest = "guest" + (new Date()).toString();
+            idDevices = mReference.child(idReferenceGuest).child(getResources().getString(R.string.device_reference_child)).push();
+        }else {
+            idDevices = mReference.child(idReferenceGuest).child(getResources().getString(R.string.device_reference_child)).push();
+        }
+
         String idDataBase = idDevices.getKey();
         device.setId(idDataBase);
 
