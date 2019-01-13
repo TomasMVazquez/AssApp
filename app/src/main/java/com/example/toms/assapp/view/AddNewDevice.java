@@ -357,6 +357,8 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
         String idDataBase = idDevices.getKey();
         device.setId(idDataBase);
 
+        //TODO base de imagenes en el storage
+
         idDevices.setValue(new Device(device.getId(),device.getTypeDevice(),device.getName(),device.getMake(),device.getModel()
                 ,device.getSalesDate(),device.getPhotoList(),device.getInsured()));
     }

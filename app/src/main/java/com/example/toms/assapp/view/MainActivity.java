@@ -27,10 +27,16 @@ import com.example.toms.assapp.view.fragments.MyInsuranceFragment;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements MyInsuranceFragment.OnFragmentFormNotify {
 
@@ -42,6 +48,8 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
 
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
+    private FirebaseDatabase mDatabase;
+    private DatabaseReference mReference;
 
     private static String idGuest;
 
@@ -58,6 +66,9 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
+        //firebase
+        mDatabase = FirebaseDatabase.getInstance();
+        mReference  = mDatabase.getReference();
 
         Util.printHash(this);
 
@@ -176,18 +187,52 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
     //Actualizar experiencia de usuario
     public void updateUI(FirebaseUser user){
         //Call fragment to add new devices
-        MyInsuranceFragment myInsuranceFragment = new MyInsuranceFragment();
+        final MyInsuranceFragment myInsuranceFragment = new MyInsuranceFragment();
         cargarFragment(myInsuranceFragment);
 
         if (user != null) {
             navigationView.getMenu().findItem(R.id.login).setTitle(getResources().getString(R.string.logout));
             String name = user.getDisplayName();
+            String email = user.getEmail();
+            String phone = user.getPhoneNumber();
             Uri uri = user.getPhotoUrl();
+
+            //todo que pasa si ya esta logeado!
+            if (idGuest!=null) {
+                if (email != null) {
+                    String mail = email.substring(0, email.indexOf("."));
+                    //+ "_" + email.substring(email.indexOf("@")+1);
+                    updateGuestDataBase(mail);
+                } else {
+                    updateGuestDataBase(phone);
+                }
+            }
         }else {
             navigationView.getMenu().findItem(R.id.login).setTitle(getResources().getString(R.string.login));
             //Commenting log in when starting cause the client wants the customer to be able to add device to see the pricing
             //goLogIn();
         }
+    }
+
+    //Actualizar nombre de base de datos del cliente guest al iniciar
+    public void updateGuestDataBase(final String name){
+
+        final Map newUserData = new HashMap();
+
+        mReference.child(idGuest).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                newUserData.put(name,dataSnapshot.getValue());
+                mReference.updateChildren(newUserData);
+                mReference.child(idGuest).removeValue();
+                idGuest = null;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     //Al salir de la app destruir la base de datos del guest
@@ -197,6 +242,7 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
             FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
             DatabaseReference mReference = mDatabase.getReference();
             FirebaseStorage mStorage = FirebaseStorage.getInstance();
+            //TODO falta limpiar la base de imagenes del guest
             StorageReference raiz = mStorage.getReference();
 
             mReference.child(idGuest).removeValue();
@@ -208,7 +254,6 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
     @Override
     public void showIdGuest(String id) {
         idGuest = id;
-        Toast.makeText(this, id, Toast.LENGTH_SHORT).show();
     }
 
     public static String showId(){
