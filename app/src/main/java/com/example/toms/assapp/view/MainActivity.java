@@ -18,7 +18,6 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.toms.assapp.R;
@@ -27,6 +26,7 @@ import com.example.toms.assapp.view.fragments.MyInsuranceFragment;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
     private FirebaseDatabase mDatabase;
     private DatabaseReference mReference;
 
-    private static String idGuest;
+    private static String idDataBase;
 
     @Override
     protected void onStart() {
@@ -152,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
             currentUser = null;
             updateUI(currentUser);
             Toast.makeText(this, "Has salido de tu sesion", Toast.LENGTH_SHORT).show();
+            idDataBase = null;
         }else {
             Intent intent = new Intent(MainActivity.this, LogInActivity.class);
             startActivityForResult(intent, KEY_LOGIN);
@@ -197,11 +198,9 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
             String phone = user.getPhoneNumber();
             Uri uri = user.getPhotoUrl();
 
-            //todo que pasa si ya esta logeado!
-            if (idGuest!=null) {
+            if (idDataBase !=null) {
                 if (email != null) {
                     String mail = email.substring(0, email.indexOf("."));
-                    //+ "_" + email.substring(email.indexOf("@")+1);
                     updateGuestDataBase(mail);
                 } else {
                     updateGuestDataBase(phone);
@@ -219,13 +218,57 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
 
         final Map newUserData = new HashMap();
 
-        mReference.child(idGuest).addListenerForSingleValueEvent(new ValueEventListener() {
+        mReference.child(name).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                newUserData.put(name,dataSnapshot.getValue());
-                mReference.updateChildren(newUserData);
-                mReference.child(idGuest).removeValue();
-                idGuest = null;
+                if (dataSnapshot.exists()){
+                    mReference.child(idDataBase).child(getResources().getString(R.string.device_reference_child)).addChildEventListener(new ChildEventListener() {
+                        @Override
+                        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                            Map newDevicesAdded = new HashMap();
+                            newDevicesAdded.put(dataSnapshot.getKey(),dataSnapshot.getValue());
+                            mReference.child(name).child(getResources().getString(R.string.device_reference_child)).updateChildren(newDevicesAdded);
+                            mReference.child(idDataBase).removeValue();
+                            idDataBase = name;
+                        }
+
+                        @Override
+                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                        }
+
+                        @Override
+                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                        }
+
+                        @Override
+                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }else {
+
+                    mReference.child(idDataBase).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            newUserData.put(name,dataSnapshot.getValue());
+                            mReference.updateChildren(newUserData);
+                            mReference.child(idDataBase).removeValue();
+                            idDataBase = name;
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
             }
 
             @Override
@@ -233,19 +276,21 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
 
             }
         });
+
     }
 
     //Al salir de la app destruir la base de datos del guest
     @Override
     protected void onDestroy() {
-        if (idGuest!=null){
+
+        if (idDataBase !=null && currentUser==null){
             FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
             DatabaseReference mReference = mDatabase.getReference();
             FirebaseStorage mStorage = FirebaseStorage.getInstance();
             //TODO falta limpiar la base de imagenes del guest
             StorageReference raiz = mStorage.getReference();
 
-            mReference.child(idGuest).removeValue();
+            mReference.child(idDataBase).removeValue();
         }
 
         super.onDestroy();
@@ -253,11 +298,11 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
 
     @Override
     public void showIdGuest(String id) {
-        idGuest = id;
+        idDataBase = id;
     }
 
     public static String showId(){
-        return idGuest;
+        return idDataBase;
     }
 }
 

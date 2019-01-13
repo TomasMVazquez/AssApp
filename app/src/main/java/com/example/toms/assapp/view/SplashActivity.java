@@ -53,6 +53,7 @@ public class SplashActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     startActivity(intent);
+                    finish();
                 }
             });
 
@@ -74,7 +75,7 @@ public class SplashActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             public void run() {
                 startActivity(intent);
-
+                finish();
             }
         }, milisegundos);
     }
