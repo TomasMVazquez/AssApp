@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
@@ -31,10 +30,12 @@ import com.bumptech.glide.Glide;
 import com.example.toms.assapp.R;
 import com.example.toms.assapp.model.Device;
 import com.example.toms.assapp.view.fragments.MyInsuranceFragment;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.text.ParseException;
@@ -48,7 +49,7 @@ import pl.aprilapps.easyphotopicker.EasyImage;
 
 public class AddNewDevice extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    public static final String KEY_ID_GUEST = "guest";
+    public static final String KEY_ID_DB = "db";
     public static final int KEY_CAMERA_ONE=301;
     public static final int KEY_CAMERA_TWO=302;
     public static final int KEY_CAMERA_THREE=303;
@@ -57,7 +58,7 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
     private FirebaseDatabase mDatabase;
     private DatabaseReference mReference;
     private FirebaseStorage mStorage;
-    private List<String> photoList;
+    private List<String> photoList = new ArrayList<>();
     private String idReferenceGuest;
 
     private ImageView imageOne;
@@ -70,6 +71,8 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
     private static EditText addSalesDate;
     private static EditText addName;
     private static TextInputLayout addTextInputSalesDate;
+    private EditText addMake;
+    private EditText addModel;
     private Switch switchInvoice;
     private TextView textViewInvoiceTitle;
     private CardView cardViewImageOne;
@@ -87,12 +90,14 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
         //Raiz del Storage
         StorageReference raiz = mStorage.getReference();
 
-        //bundle
+//        //bundle
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        if (bundle.getString(KEY_ID_GUEST)!=null) {
-            idReferenceGuest = bundle.getString(KEY_ID_GUEST);
+        if (bundle.getString(KEY_ID_DB)!=null) {
+            idReferenceGuest = bundle.getString(KEY_ID_DB);
         }
+
+//        idReferenceGuest = MainActivity.showId();
 
         //Views
         Button fabAddDevice = findViewById(R.id.fabAddDevice);
@@ -107,8 +112,8 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
         TextInputLayout addTextInputModel = findViewById(R.id.addTextInputModel);
         addName = findViewById(R.id.addDeviceName);
         addSalesDate = findViewById(R.id.addSalesDate);
-        final EditText addMake = findViewById(R.id.addMake);
-        final EditText addModel = findViewById(R.id.addModel);
+        addMake = findViewById(R.id.addMake);
+        addModel = findViewById(R.id.addModel);
         switchInvoice = findViewById(R.id.switchInvoice);
         textViewInvoiceTitle = findViewById(R.id.textViewInvoiceTitle);
         cardViewImageOne = findViewById(R.id.cardViewImageOne);
@@ -138,14 +143,14 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
         //Seleccionar los items del spinner
         ArrayList<String> spinnerArray = new ArrayList<>();
         spinnerArray.add("Elige el tipo de dispositivo");
-        spinnerArray.add("Grande Electrodomestico");
-        spinnerArray.add("Pequeño Electrodomestico");
         spinnerArray.add("TV/LCD/SMART");
         spinnerArray.add("Consola");
+        spinnerArray.add("Monitor PC");
+        spinnerArray.add("Notebook");
         spinnerArray.add("Tablet");
         spinnerArray.add("Celular");
         spinnerArray.add("Bicicleta");
-        spinnerArray.add("Electrónicos");
+        spinnerArray.add("Equipo de audio");
 
         ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,spinnerArray);
         adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -194,7 +199,6 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
                 }
             }
         });
-
     }
 
     //Button addDevice
@@ -214,13 +218,37 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
             return false;
         }
 
+        if (addName.getText().length()==0){
+            Toast.makeText(this, getResources().getString(R.string.error_not_enough_info), Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (addMake.getText().length()==0){
+            Toast.makeText(this, getResources().getString(R.string.error_not_enough_info), Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (addModel.getText().length()==0){
+            Toast.makeText(this, getResources().getString(R.string.error_not_enough_info), Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (photoList.size()<4){
+            Toast.makeText(this, getResources().getString(R.string.error_not_photo), Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
         return true;
     }
+
+
 
     //Activity for Result
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        //Photos of devices
         EasyImage.handleActivityResult(requestCode, resultCode, data, AddNewDevice.this, new EasyImage.Callbacks() {
             @Override
             public void onImagePickerError(Exception e, EasyImage.ImageSource imageSource, int i) {
@@ -229,21 +257,57 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
 
             @Override
             public void onImagesPicked(@NonNull List<File> list, EasyImage.ImageSource imageSource, int i) {
+                StorageReference raiz = mStorage.getReference();
+
                 if (list.size()>0) {
                     File file = list.get(0);
-                    Uri uri = Uri.fromFile(file);
+                    final Uri uri = Uri.fromFile(file);
+                    final Uri uriTemp = Uri.fromFile(new File(uri.getPath()));
+
                     switch (i) {
                         case KEY_CAMERA_ONE:
-                            Glide.with(AddNewDevice.this).load(uri).into(imageOne);
+                            final StorageReference oneFoto = raiz.child(uriTemp.getLastPathSegment());
+                            UploadTask uploadTask = oneFoto.putFile(uriTemp);
+                            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    photoList.add(uriTemp.getLastPathSegment());
+                                    Glide.with(AddNewDevice.this).load(uri).into(imageOne);
+                                }
+                            });
                             break;
                         case KEY_CAMERA_TWO:
-                            Glide.with(AddNewDevice.this).load(uri).into(imageTwo);
+                            final StorageReference twoFoto = raiz.child(uriTemp.getLastPathSegment());
+                            uploadTask = twoFoto.putFile(uriTemp);
+                            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    photoList.add(uriTemp.getLastPathSegment());
+                                    Glide.with(AddNewDevice.this).load(uri).into(imageTwo);
+                                }
+                            });
                             break;
                         case KEY_CAMERA_THREE:
-                            Glide.with(AddNewDevice.this).load(uri).into(imageThree);
+                            final StorageReference threeFoto = raiz.child(uriTemp.getLastPathSegment());
+                            uploadTask = threeFoto.putFile(uriTemp);
+                            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    photoList.add(uriTemp.getLastPathSegment());
+                                    Glide.with(AddNewDevice.this).load(uri).into(imageThree);
+                                }
+                            });
                             break;
                         case KEY_CAMERA_FOUR:
-                            Glide.with(AddNewDevice.this).load(uri).into(imageFour);
+                            final StorageReference fourFoto = raiz.child(uriTemp.getLastPathSegment());
+                            uploadTask = fourFoto.putFile(uriTemp);
+                            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    photoList.add(uriTemp.getLastPathSegment());
+                                    Glide.with(AddNewDevice.this).load(uri).into(imageFour);
+                                }
+                            });
                             break;
                         default:
                             break;
@@ -260,12 +324,12 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
-    //Spinner
+    //Spinner to select the type
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (position!=0){
             deviceType = parent.getItemAtPosition(position).toString();
-            Toast.makeText(this, parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -275,7 +339,7 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
     }
 
 
-    //Date Picker Comands
+    //Date Picker Comands - for purchase date
     public static class DatePickerFragment extends DialogFragment implements
             DatePickerDialog.OnDateSetListener {
 
@@ -356,8 +420,6 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
 
         String idDataBase = idDevices.getKey();
         device.setId(idDataBase);
-
-        //TODO base de imagenes en el storage
 
         idDevices.setValue(new Device(device.getId(),device.getTypeDevice(),device.getName(),device.getMake(),device.getModel()
                 ,device.getSalesDate(),device.getPhotoList(),device.getInsured()));

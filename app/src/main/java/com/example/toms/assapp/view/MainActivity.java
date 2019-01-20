@@ -3,6 +3,7 @@ package com.example.toms.assapp.view;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -197,19 +198,22 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
             String email = user.getEmail();
             String phone = user.getPhoneNumber();
             Uri uri = user.getPhotoUrl();
+            String dataBaseName;
 
-            if (idDataBase !=null) {
-                if (email != null) {
-                    String mail = email.substring(0, email.indexOf("."));
-                    updateGuestDataBase(mail);
-                } else {
-                    updateGuestDataBase(phone);
-                }
+            if (email != null) {
+                String mail = email.substring(0, email.indexOf("."));
+                dataBaseName = mail;
+            }else {
+                dataBaseName = phone;
+            }
+
+            if (idDataBase != null && !idDataBase.equals(dataBaseName)){
+                updateGuestDataBase(dataBaseName);
+            } else {
+                idDataBase = dataBaseName;
             }
         }else {
             navigationView.getMenu().findItem(R.id.login).setTitle(getResources().getString(R.string.login));
-            //Commenting log in when starting cause the client wants the customer to be able to add device to see the pricing
-            //goLogIn();
         }
     }
 
@@ -230,6 +234,7 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
                             mReference.child(name).child(getResources().getString(R.string.device_reference_child)).updateChildren(newDevicesAdded);
                             mReference.child(idDataBase).removeValue();
                             idDataBase = name;
+                            //return;
                         }
 
                         @Override
@@ -285,12 +290,17 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
 
         if (idDataBase !=null && currentUser==null){
             FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-            DatabaseReference mReference = mDatabase.getReference();
+            final DatabaseReference mReference = mDatabase.getReference();
             FirebaseStorage mStorage = FirebaseStorage.getInstance();
-            //TODO falta limpiar la base de imagenes del guest
-            StorageReference raiz = mStorage.getReference();
-
-            mReference.child(idDataBase).removeValue();
+            final StorageReference raiz = mStorage.getReference();
+            //TODO ver como eliminar las fotos del guest
+//            Handler handler = new Handler();
+//            handler.postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+                    mReference.child(idDataBase).removeValue();
+//                }
+//            },3000);
         }
 
         super.onDestroy();

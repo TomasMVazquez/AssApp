@@ -9,8 +9,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.toms.assapp.R;
 import com.example.toms.assapp.view.AddNewDevice;
@@ -22,9 +20,9 @@ import com.example.toms.assapp.view.MainActivity;
 public class MyInsuranceFragment extends Fragment {
 
     public static final int KEY_ADD_DEVICE = 201;
-    public static final String KEY_ID_GUEST = "guest";
+    public static final String KEY_ID_DB = "db";
 
-    private String idGuest;
+    private String idDataBase;
 
     public MyInsuranceFragment() {
         // Required empty public constructor
@@ -40,15 +38,15 @@ public class MyInsuranceFragment extends Fragment {
         //Views
         FloatingActionButton fabAddInsurance = view.findViewById(R.id.fabAddInsurance);
 
-        idGuest = MainActivity.showId();
 
         //actions
         fabAddInsurance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                idDataBase = MainActivity.showId();
                 Intent i = new Intent(view.getContext(),AddNewDevice.class);
                 Bundle bundle = new Bundle();
-                bundle.putString(AddNewDevice.KEY_ID_GUEST, idGuest);
+                bundle.putString(AddNewDevice.KEY_ID_DB, idDataBase);
                 i.putExtras(bundle);
                 startActivityForResult(i,KEY_ADD_DEVICE);
             }
@@ -64,11 +62,11 @@ public class MyInsuranceFragment extends Fragment {
 
         if (resultCode == Activity.RESULT_OK && requestCode == KEY_ADD_DEVICE){
             Bundle bundle = data.getExtras();
-            idGuest = bundle.getString(KEY_ID_GUEST);
+            idDataBase = bundle.getString(KEY_ID_DB);
 
-            if (idGuest != null){
+            if (idDataBase != null){
                 OnFragmentFormNotify onFragmentFormNotify= (OnFragmentFormNotify) getContext();
-                onFragmentFormNotify.showIdGuest(idGuest);
+                onFragmentFormNotify.showIdGuest(idDataBase);
             }
         }
     }
@@ -78,7 +76,7 @@ public class MyInsuranceFragment extends Fragment {
     public static Intent dataBaseId(String id){
         Intent intent = new Intent();
         Bundle bundle = new Bundle();
-        bundle.putString(KEY_ID_GUEST, id);
+        bundle.putString(KEY_ID_DB, id);
         intent.putExtras(bundle);
         return intent;
     }

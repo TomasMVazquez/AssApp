@@ -24,6 +24,7 @@
     <string name="error_not_device_choosen">Recuerde que debe seleccionar el tipo de dispositivo</string>
     <string name="error_not_sales_date">Recuerde que debe ingresar la fecha de compra del dispositivo</string>
     <string name="error_not_photo">Aún faltan fotos</string>
+    <string name="error_not_enough_info">Debe completar todos los campos para continuar</string>
 
     //Database
     <string name="device_reference_child">myDevice</string>
