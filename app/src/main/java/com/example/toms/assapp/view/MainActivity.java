@@ -104,6 +104,8 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
             }
         });
 
+        //TODO DAO AND CONTROLLER FROM DATBASE
+
     }
 
     //Inflar Menu para ver el boton de ir al Login

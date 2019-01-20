@@ -6,23 +6,33 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.toms.assapp.R;
+import com.example.toms.assapp.controller.ControllerFirebaseDataBase;
+import com.example.toms.assapp.model.Device;
+import com.example.toms.assapp.util.ResultListener;
 import com.example.toms.assapp.view.AddNewDevice;
 import com.example.toms.assapp.view.MainActivity;
+import com.example.toms.assapp.view.adpater.AdapterDeviceRecycler;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MyInsuranceFragment extends Fragment {
+public class MyInsuranceFragment extends Fragment implements AdapterDeviceRecycler.AdaptadorInterface {
 
     public static final int KEY_ADD_DEVICE = 201;
     public static final String KEY_ID_DB = "db";
 
     private String idDataBase;
+    private AdapterDeviceRecycler adapterDeviceRecycler;
 
     public MyInsuranceFragment() {
         // Required empty public constructor
@@ -38,6 +48,28 @@ public class MyInsuranceFragment extends Fragment {
         //Views
         FloatingActionButton fabAddInsurance = view.findViewById(R.id.fabAddInsurance);
 
+        //Recycler Adapter
+        adapterDeviceRecycler = new AdapterDeviceRecycler(new ArrayList<Device>(),this);
+
+        //Info DataBAse
+        ControllerFirebaseDataBase controllerFirebaseDataBase = new ControllerFirebaseDataBase();
+        if (MainActivity.showId()!=null) {
+            controllerFirebaseDataBase.giveDeviceList(getContext(), MainActivity.showId(), new ResultListener<List<Device>>() {
+                @Override
+                public void finish(List<Device> resultado) {
+                    if (resultado.size() > 0) {
+                        adapterDeviceRecycler.setDeviceList(resultado);
+                    }
+                }
+            });
+        }
+        
+        //RecyclerView
+        RecyclerView recyclerDevices = view.findViewById(R.id.recyclerDevices);
+        recyclerDevices.setHasFixedSize(true);
+        LinearLayoutManager llm =new LinearLayoutManager(view.getContext(),LinearLayoutManager.VERTICAL,false);
+        recyclerDevices.setLayoutManager(llm);
+        recyclerDevices.setAdapter(adapterDeviceRecycler);
 
         //actions
         fabAddInsurance.setOnClickListener(new View.OnClickListener() {
@@ -79,6 +111,11 @@ public class MyInsuranceFragment extends Fragment {
         bundle.putString(KEY_ID_DB, id);
         intent.putExtras(bundle);
         return intent;
+    }
+
+    @Override
+    public void goToDetails(Device device, Integer position) {
+        //TODO ir al detalle
     }
 
     public interface OnFragmentFormNotify{
