@@ -1,6 +1,7 @@
 package com.example.toms.assapp.view;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
     private NavigationView navigationView;
 
     private FirebaseAuth mAuth;
-    private FirebaseUser currentUser;
+    private static FirebaseUser currentUser;
     private FirebaseDatabase mDatabase;
     private DatabaseReference mReference;
 
@@ -104,8 +105,6 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
             }
         });
 
-        //TODO DAO AND CONTROLLER FROM DATBASE
-
     }
 
     //Inflar Menu para ver el boton de ir al Login
@@ -145,6 +144,15 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.container, fragment);
         fragmentTransaction.commit();
+    }
+
+    //Confirmar si esta Logeado
+    public static Boolean isLogon(Context context){
+        if (currentUser!=null){
+            return true;
+        }else {
+            return false;
+        }
     }
 
     //Ir al Login

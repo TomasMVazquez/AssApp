@@ -155,6 +155,15 @@
             </android.support.design.widget.TextInputLayout>
 
             <TextView
+                android:id="@+id/imeiCel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:layout_marginBottom="15dp"
+                android:visibility="gone"
+                />
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/photos_fragment_add"

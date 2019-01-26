@@ -11,12 +11,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.toms.assapp.R;
 import com.example.toms.assapp.controller.ControllerFirebaseDataBase;
 import com.example.toms.assapp.model.Device;
 import com.example.toms.assapp.util.ResultListener;
 import com.example.toms.assapp.view.AddNewDevice;
+import com.example.toms.assapp.view.LogInActivity;
 import com.example.toms.assapp.view.MainActivity;
 import com.example.toms.assapp.view.adpater.AdapterDeviceRecycler;
 
@@ -28,6 +30,7 @@ import java.util.List;
  */
 public class MyInsuranceFragment extends Fragment implements AdapterDeviceRecycler.AdaptadorInterface {
 
+    public static final int KEY_LOGIN = 202;
     public static final int KEY_ADD_DEVICE = 201;
     public static final String KEY_ID_DB = "db";
 
@@ -63,7 +66,7 @@ public class MyInsuranceFragment extends Fragment implements AdapterDeviceRecycl
                 }
             });
         }
-        
+
         //RecyclerView
         RecyclerView recyclerDevices = view.findViewById(R.id.recyclerDevices);
         recyclerDevices.setHasFixedSize(true);
@@ -92,15 +95,22 @@ public class MyInsuranceFragment extends Fragment implements AdapterDeviceRecycl
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == Activity.RESULT_OK && requestCode == KEY_ADD_DEVICE){
-            Bundle bundle = data.getExtras();
-            idDataBase = bundle.getString(KEY_ID_DB);
-
-            if (idDataBase != null){
-                OnFragmentFormNotify onFragmentFormNotify= (OnFragmentFormNotify) getContext();
-                onFragmentFormNotify.showIdGuest(idDataBase);
+        if (resultCode == Activity.RESULT_OK){
+            switch (requestCode){
+                case KEY_ADD_DEVICE:
+                    Bundle bundle = data.getExtras();
+                    idDataBase = bundle.getString(KEY_ID_DB);
+                    if (idDataBase != null){
+                        OnFragmentFormNotify onFragmentFormNotify= (OnFragmentFormNotify) getContext();
+                        onFragmentFormNotify.showIdGuest(idDataBase);
+                    }
+                    break;
+                case KEY_LOGIN:
+                    Toast.makeText(getContext(), "Login exitoso", Toast.LENGTH_SHORT).show();
+                    break;
             }
         }
+
     }
 
 
@@ -116,6 +126,12 @@ public class MyInsuranceFragment extends Fragment implements AdapterDeviceRecycl
     @Override
     public void goToDetails(Device device, Integer position) {
         //TODO ir al detalle
+    }
+
+    @Override
+    public void goToLogIn() {
+        Intent intent = new Intent(getContext(), LogInActivity.class);
+        startActivityForResult(intent, KEY_LOGIN);
     }
 
     public interface OnFragmentFormNotify{

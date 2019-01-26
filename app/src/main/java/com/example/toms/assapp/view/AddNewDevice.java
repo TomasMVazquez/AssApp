@@ -1,17 +1,26 @@
 package com.example.toms.assapp.view;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.telephony.TelephonyManager;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -50,10 +59,12 @@ import pl.aprilapps.easyphotopicker.EasyImage;
 public class AddNewDevice extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     public static final String KEY_ID_DB = "db";
-    public static final int KEY_CAMERA_ONE=301;
-    public static final int KEY_CAMERA_TWO=302;
-    public static final int KEY_CAMERA_THREE=303;
-    public static final int KEY_CAMERA_FOUR=304;
+    public static final int KEY_CAMERA_ONE = 301;
+    public static final int KEY_CAMERA_TWO = 302;
+    public static final int KEY_CAMERA_THREE = 303;
+    public static final int KEY_CAMERA_FOUR = 304;
+
+    private TelephonyManager telephonyManager;
 
     private FirebaseDatabase mDatabase;
     private DatabaseReference mReference;
@@ -76,6 +87,7 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
     private Switch switchInvoice;
     private TextView textViewInvoiceTitle;
     private CardView cardViewImageOne;
+    private TextView imeiCel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +96,7 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
 
         //firebase
         mDatabase = FirebaseDatabase.getInstance();
-        mReference  = mDatabase.getReference();
+        mReference = mDatabase.getReference();
         //Gerente
         mStorage = FirebaseStorage.getInstance();
         //Raiz del Storage
@@ -93,7 +105,7 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
 //        //bundle
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        if (bundle.getString(KEY_ID_DB)!=null) {
+        if (bundle.getString(KEY_ID_DB) != null) {
             idReferenceGuest = bundle.getString(KEY_ID_DB);
         }
 
@@ -117,21 +129,22 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
         switchInvoice = findViewById(R.id.switchInvoice);
         textViewInvoiceTitle = findViewById(R.id.textViewInvoiceTitle);
         cardViewImageOne = findViewById(R.id.cardViewImageOne);
+        imeiCel = findViewById(R.id.imeiCel);
 
         //checking invoice
         switchInvoice.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-               invoiceChecked();
+                invoiceChecked();
             }
         });
 
         //Adding date piccker for sales date
-            //Stting this on Touch will not allow blind people to use the app (https://www.youtube.com/watch?v=1by5J7c5Vz4&feature=youtu.be)
+        //Stting this on Touch will not allow blind people to use the app (https://www.youtube.com/watch?v=1by5J7c5Vz4&feature=youtu.be)
         addSalesDate.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()){
+                switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         showTruitonDatePickerDialog(v);
                         return true;
@@ -143,43 +156,44 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
         //Seleccionar los items del spinner
         ArrayList<String> spinnerArray = new ArrayList<>();
         spinnerArray.add("Elige el tipo de dispositivo");
+        spinnerArray.add("Celular");
         spinnerArray.add("TV/LCD/SMART");
         spinnerArray.add("Consola");
         spinnerArray.add("Monitor PC");
         spinnerArray.add("Notebook");
         spinnerArray.add("Tablet");
-        spinnerArray.add("Celular");
         spinnerArray.add("Bicicleta");
         spinnerArray.add("Equipo de audio");
 
-        ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,spinnerArray);
+        ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, spinnerArray);
         adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerSelectTypeDevice.setAdapter(adapterSpinner);
         spinnerSelectTypeDevice.setOnItemSelectedListener(this);
+
 
         //Call camera on click imageview
         imageOne.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EasyImage.openChooserWithGallery(AddNewDevice.this,"Elegir",KEY_CAMERA_ONE);
+                EasyImage.openChooserWithGallery(AddNewDevice.this, "Elegir", KEY_CAMERA_ONE);
             }
         });
         imageTwo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EasyImage.openChooserWithGallery(AddNewDevice.this,"Elegir",KEY_CAMERA_TWO);
+                EasyImage.openChooserWithGallery(AddNewDevice.this, "Elegir", KEY_CAMERA_TWO);
             }
         });
         imageThree.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EasyImage.openChooserWithGallery(AddNewDevice.this,"Elegir",KEY_CAMERA_THREE);
+                EasyImage.openChooserWithGallery(AddNewDevice.this, "Elegir", KEY_CAMERA_THREE);
             }
         });
         imageFour.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EasyImage.openChooserWithGallery(AddNewDevice.this,"Elegir",KEY_CAMERA_FOUR);
+                EasyImage.openChooserWithGallery(AddNewDevice.this, "Elegir", KEY_CAMERA_FOUR);
             }
         });
 
@@ -188,13 +202,13 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void onClick(View v) {
                 if (checkInfo()) {
-                    Device newDevice = new Device("",deviceType,addName.getText().toString(),
-                            addMake.getText().toString(),addModel.getText().toString(),addSalesDate.getText().toString(),
-                            photoList,false);
+                    Device newDevice = new Device("", deviceType, addName.getText().toString(),
+                            addMake.getText().toString(), addModel.getText().toString(), addSalesDate.getText().toString(),
+                            photoList, false);
                     addDeviceToDataBase(newDevice);
 
                     Intent data = MyInsuranceFragment.dataBaseId(idReferenceGuest);
-                    setResult(Activity.RESULT_OK,data);
+                    setResult(Activity.RESULT_OK, data);
                     finish();
                 }
             }
@@ -202,45 +216,44 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
     }
 
     //Button addDevice
-    public boolean checkInfo(){
-        if (spinnerSelectTypeDevice.getSelectedItemPosition()==0){
+    public boolean checkInfo() {
+        if (spinnerSelectTypeDevice.getSelectedItemPosition() == 0) {
             Toast.makeText(this, getResources().getString(R.string.error_not_device_choosen), Toast.LENGTH_SHORT).show();
             return false;
         }
 
-        if (!switchInvoice.isChecked()){
+        if (!switchInvoice.isChecked()) {
             Toast.makeText(this, getResources().getString(R.string.error_not_invoice_checked), Toast.LENGTH_SHORT).show();
             return false;
         }
 
-        if (addSalesDate.getText().length()==0){
+        if (addSalesDate.getText().length() == 0) {
             Toast.makeText(this, getResources().getString(R.string.error_not_sales_date), Toast.LENGTH_SHORT).show();
             return false;
         }
 
-        if (addName.getText().length()==0){
+        if (addName.getText().length() == 0) {
             Toast.makeText(this, getResources().getString(R.string.error_not_enough_info), Toast.LENGTH_SHORT).show();
             return false;
         }
 
-        if (addMake.getText().length()==0){
+        if (addMake.getText().length() == 0) {
             Toast.makeText(this, getResources().getString(R.string.error_not_enough_info), Toast.LENGTH_SHORT).show();
             return false;
         }
 
-        if (addModel.getText().length()==0){
+        if (addModel.getText().length() == 0) {
             Toast.makeText(this, getResources().getString(R.string.error_not_enough_info), Toast.LENGTH_SHORT).show();
             return false;
         }
 
-        if (photoList.size()<4){
+        if (photoList.size() < 4) {
             Toast.makeText(this, getResources().getString(R.string.error_not_photo), Toast.LENGTH_SHORT).show();
             return false;
         }
 
         return true;
     }
-
 
 
     //Activity for Result
@@ -259,7 +272,7 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
             public void onImagesPicked(@NonNull List<File> list, EasyImage.ImageSource imageSource, int i) {
                 StorageReference raiz = mStorage.getReference();
 
-                if (list.size()>0) {
+                if (list.size() > 0) {
                     File file = list.get(0);
                     final Uri uri = Uri.fromFile(file);
                     final Uri uriTemp = Uri.fromFile(new File(uri.getPath()));
@@ -325,11 +338,26 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
     }
 
     //Spinner to select the type
+    @SuppressLint("MissingPermission")
+    @TargetApi(Build.VERSION_CODES.O)
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if (position!=0){
+        if (position != 0) {
             deviceType = parent.getItemAtPosition(position).toString();
             //Toast.makeText(this, parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+            if (position == 1) {
+                addMake.setText(Build.MANUFACTURER);
+                addModel.setText(Build.MODEL);
+                telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                //TODO CHECK PERMISSION ??
+                imeiCel.setVisibility(View.VISIBLE);
+                imeiCel.setText(telephonyManager.getImei());
+            }else {
+                imeiCel.setText("");
+                addMake.setText("");
+                addModel.setText("");
+                imeiCel.setVisibility(View.GONE);
+            }
         }
     }
 
