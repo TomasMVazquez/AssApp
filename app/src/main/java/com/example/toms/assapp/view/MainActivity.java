@@ -192,6 +192,8 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
                     break;
 
             }
+        }else {
+            Toast.makeText(this, "Fallo LogIn", Toast.LENGTH_SHORT).show();
         }
 
     }

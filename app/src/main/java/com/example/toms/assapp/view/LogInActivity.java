@@ -3,6 +3,7 @@ package com.example.toms.assapp.view;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +17,7 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,6 +29,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class LogInActivity extends AppCompatActivity {
+
+    public static final int KEY_UIF = 102;
 
     private CallbackManager callbackManager;
     private FirebaseAuth mAuth;
@@ -74,15 +78,30 @@ public class LogInActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (currentUser != null) {
-            super.onBackPressed();
-        }
+        super.onBackPressed();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == Activity.RESULT_OK){
+            switch (requestCode){
+                case KEY_UIF:
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    //Volver a la pantalla
+                    Intent info = MainActivity.respuestaLogin(user.getDisplayName());
+                    setResult(Activity.RESULT_OK,info);
+                    finish();
+                    break;
+            }
+        }else {
+            FirebaseAuth.getInstance().signOut();
+            LoginManager.getInstance().logOut();
+            setResult(Activity.RESULT_CANCELED);
+            finish();
+        }
     }
 
     private void handleFacebookAccessToken(AccessToken token) {
@@ -95,9 +114,8 @@ public class LogInActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
-                            Intent data = MainActivity.respuestaLogin(user.getDisplayName());
-                            setResult(Activity.RESULT_OK,data);
-                            finish();
+                            Intent intent = new Intent( LogInActivity.this,UifDataActivity.class);
+                            startActivityForResult(intent, KEY_UIF);
                         } else {
                             // If sign in fails, display a message to the user.
                             updateUI(null);
@@ -107,6 +125,7 @@ public class LogInActivity extends AppCompatActivity {
                     }
                 });
     }
+
 
     public void updateUI(FirebaseUser user){
         if (user != null) {

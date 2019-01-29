@@ -28,6 +28,7 @@
 
     //Database
     <string name="device_reference_child">myDevice</string>
+    <string name="uif_reference_child">myInfo</string>
 
     //LogIn
     <string name="welcome_login">Bienvenidos a Assurant APP</string>
@@ -35,6 +36,17 @@
     //Facebook
     <string name="facebook_app_id">292033288323458</string>
     <string name="fb_login_protocol_scheme">fb292033288323458</string>
+    //UIF DATA
+    <string name="uif_title">Unos pasos más</string>
+    <string name="uif_documento">Número de documento</string>
+    <string name="uif_birth">Fecha de nacimiento</string>
+    <string name="uif_cuit">CUIT</string>
+    <string name="uif_address">Dirección</string>
+    <string name="uif_phone">Teléfono</string>
+    <string name="uif_email">EMAIL</string>
+    <string name="uif_activity">Actividad laboral</string>
+    <string name="uif_maritial">Estado civil</string>
+    <string name="uif_btn">Finalizar</string>
 
 
 </resources>
