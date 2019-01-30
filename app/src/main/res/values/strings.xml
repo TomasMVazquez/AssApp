@@ -41,6 +41,7 @@
     <string name="uif_documento">Número de documento</string>
     <string name="uif_birth">Fecha de nacimiento</string>
     <string name="uif_cuit">CUIT</string>
+    <string name="uif_nationality">Nacionalidad</string>
     <string name="uif_address">Dirección</string>
     <string name="uif_phone">Teléfono</string>
     <string name="uif_email">EMAIL</string>

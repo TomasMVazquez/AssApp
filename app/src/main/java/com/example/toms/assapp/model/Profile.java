@@ -1,7 +1,5 @@
 package com.example.toms.assapp.model;
 
-import java.util.Date;
-
 public class Profile {
 
     //Atributos
@@ -10,7 +8,7 @@ public class Profile {
     private String email;
     private String phone;
     private String document;
-    private Date birth;
+    private String birth;
     private String nationality;
     private String cuit;
     private String address;
@@ -18,7 +16,7 @@ public class Profile {
     private String socialStatus;
 
     //Constructor
-    public Profile(String idProfile, String name, String email, String phone, String document, Date birth, String nationality, String cuit, String address, String activity, String socialStatus) {
+    public Profile(String idProfile, String name, String email, String phone, String document, String birth, String nationality, String cuit, String address, String activity, String socialStatus) {
         this.idProfile = idProfile;
         this.name = name;
         this.email = email;
@@ -71,7 +69,7 @@ public class Profile {
         return document;
     }
 
-    public Date getBirth() {
+    public String getBirth() {
         return birth;
     }
 

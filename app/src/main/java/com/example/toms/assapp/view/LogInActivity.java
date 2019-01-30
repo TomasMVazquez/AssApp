@@ -27,6 +27,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class LogInActivity extends AppCompatActivity {
 
@@ -112,10 +117,45 @@ public class LogInActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            FirebaseUser user = mAuth.getCurrentUser();
+                            final FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
-                            Intent intent = new Intent( LogInActivity.this,UifDataActivity.class);
-                            startActivityForResult(intent, KEY_UIF);
+
+                            String email = user.getEmail();
+                            String phone = user.getPhoneNumber();
+                            String dataBaseName;
+                            if (email != null) {
+                                String mail = email.substring(0, email.indexOf("."));
+                                dataBaseName = mail;
+                            }else {
+                                dataBaseName = phone;
+                            }
+
+                            DatabaseReference mReference = FirebaseDatabase.getInstance().getReference();
+                            DatabaseReference idProfile = mReference.child(dataBaseName).child(getResources().getString(R.string.uif_reference_child));
+                            idProfile.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.exists()){
+                                        Intent info = MainActivity.respuestaLogin(user.getDisplayName());
+                                        setResult(Activity.RESULT_OK,info);
+                                        finish();
+                                    }else {
+                                        Intent intent = new Intent( LogInActivity.this,UifDataActivity.class);
+                                        Bundle bundle = new Bundle();
+                                        bundle.putString(UifDataActivity.KEY_EMAIL,user.getEmail());
+                                        bundle.putString(UifDataActivity.KEY_PHONE,user.getPhoneNumber());
+                                        bundle.putString(UifDataActivity.KEY_FULL_NAME,user.getDisplayName());
+                                        intent.putExtras(bundle);
+                                        startActivityForResult(intent, KEY_UIF);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+
                         } else {
                             // If sign in fails, display a message to the user.
                             updateUI(null);

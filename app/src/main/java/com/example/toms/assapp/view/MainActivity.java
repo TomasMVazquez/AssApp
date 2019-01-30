@@ -190,8 +190,8 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
                     String name = bundle.getString(KEY_NAME);
                     Toast.makeText(this, name, Toast.LENGTH_SHORT).show();
                     break;
-
             }
+            updateUI(currentUser);
         }else {
             Toast.makeText(this, "Fallo LogIn", Toast.LENGTH_SHORT).show();
         }

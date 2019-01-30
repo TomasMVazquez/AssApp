@@ -107,6 +107,7 @@ public class MyInsuranceFragment extends Fragment implements AdapterDeviceRecycl
                     break;
                 case KEY_LOGIN:
                     Toast.makeText(getContext(), "Login exitoso", Toast.LENGTH_SHORT).show();
+
                     break;
             }
         }

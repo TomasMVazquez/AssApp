@@ -3,6 +3,7 @@ package com.example.toms.assapp.view;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
@@ -20,8 +21,12 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.toms.assapp.R;
+import com.example.toms.assapp.model.Device;
+import com.example.toms.assapp.model.Profile;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,6 +35,13 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class UifDataActivity extends AppCompatActivity {
+
+    public static final String KEY_EMAIL = "email";
+    public static final String KEY_PHONE = "phone";
+    public static final String KEY_FULL_NAME = "fullname";
+
+    private FirebaseDatabase mDatabase;
+    private DatabaseReference mReference;
 
     private Spinner spinnerDocumentType;
     private static EditText addBirth;
@@ -40,12 +52,21 @@ public class UifDataActivity extends AppCompatActivity {
     private EditText addEmail;
     private EditText addActivity;
     private EditText addMaritial;
+    private EditText addNationality;
+
+    private String email;
+    private String phone;
+    private String name;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_uif_data);
+
+        //firebase
+        mDatabase = FirebaseDatabase.getInstance();
+        mReference = mDatabase.getReference();
 
         spinnerDocumentType = findViewById(R.id.spinnerDocumentType);
         addBirth = findViewById(R.id.addBirth);
@@ -57,16 +78,23 @@ public class UifDataActivity extends AppCompatActivity {
         addEmail = findViewById(R.id.addEmail);
         addActivity = findViewById(R.id.addActivity);
         addMaritial = findViewById(R.id.addMaritial);
+        addNationality = findViewById(R.id.addNationality);
 
         final TextInputLayout addTextInputCuit = findViewById(R.id.addTextInputCuit);
 
-//        if (user.getEmail()!=null){
-//            addEmail.setText(user.getEmail());
-//        }
-//
-//        if (user.getPhoneNumber()!=null){
-//            addPhone.setText(user.getPhoneNumber());
-//        }
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        email = bundle.getString(KEY_EMAIL);
+        phone = bundle.getString(KEY_PHONE);
+        name = bundle.getString(KEY_FULL_NAME);
+
+        if (email!=null){
+            addEmail.setText(email);
+        }
+
+        if (phone!=null){
+            addPhone.setText(phone);
+        }
 
         //validaciones de los campos
         addCuit.addTextChangedListener(new TextWatcher() {
@@ -77,14 +105,7 @@ public class UifDataActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length()==2){
-                    if (s != "20" || s!="23" || s!="24" || s!="27"){
-                        addTextInputCuit.setError("Debe completar un CUIT valido");
-                    }else {
-                        addTextInputCuit.setError("");
-                        addCuit.setText(s + String.valueOf(addDocument.getText()));
-                    }
-                }
+
             }
 
             @Override
@@ -137,12 +158,31 @@ public class UifDataActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (checkInfo()) {
+                    Profile userProfile = new Profile(addCuit.getText().toString(),name,addEmail.getText().toString(),addPhone.getText().toString(),addDocument.getText().toString(),
+                    addBirth.getText().toString(),addNationality.getText().toString(),addCuit.getText().toString(),addAddress.getText().toString(),addActivity.getText().toString(),addMaritial.getText().toString());
+                    addProfileDataBase(userProfile);
                     setResult(Activity.RESULT_OK);
                     finish();
                 }
             }
         });
 
+    }
+
+    //Add to Database Firebase
+    public void addProfileDataBase(Profile profile){
+        String dataBaseName;
+
+        if (email != null) {
+            String mail = email.substring(0, email.indexOf("."));
+            dataBaseName = mail;
+        }else {
+            dataBaseName = phone;
+        }
+
+        DatabaseReference idProfile = mReference.child(dataBaseName).child(getResources().getString(R.string.uif_reference_child)).push();
+        idProfile.setValue(new Profile(profile.getIdProfile(),profile.getName(),profile.getEmail(),profile.getPhone(),profile.getDocument(),
+                profile.getBirth(),profile.getNationality(),profile.getCuit(),profile.getAddress(),profile.getActivity(),profile.getSocialStatus()));
     }
 
     public Boolean checkInfo(){
@@ -157,6 +197,11 @@ public class UifDataActivity extends AppCompatActivity {
         }
 
         if (addCuit.getText().length() == 0) {
+            Toast.makeText(this, "Missing info", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (addNationality.getText().length() == 0) {
             Toast.makeText(this, "Missing info", Toast.LENGTH_SHORT).show();
             return false;
         }
