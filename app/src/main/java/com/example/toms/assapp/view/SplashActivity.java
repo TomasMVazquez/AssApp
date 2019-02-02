@@ -41,7 +41,7 @@ public class SplashActivity extends AppCompatActivity {
         imageViewLogo.setAnimation(animationRotate);
         //textViewLetra.setAnimation(animationBlink);
 
-        final Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+        final Intent intent = new Intent(SplashActivity.this, WelcomeActivity.class);
 
         if (verificarConexion()) {
             int MILISEGUNDOS_ESPERA = 4000;
@@ -70,7 +70,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     public void esperarYCerrar(Integer milisegundos) {
-        final Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+        final Intent intent = new Intent(SplashActivity.this, WelcomeActivity.class);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {

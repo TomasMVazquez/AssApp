@@ -1,5 +1,23 @@
 <resources>
     <string name="app_name">AssApp</string>
+    //Onboarding
+    <string name="next">Siguiente</string>
+    <string name="skip">Salir</string>
+    <string name="start">Comenzar</string>
+
+    <string name="slide_1_title">PRIMERA PANTALLA</string>
+    <string name="slide_2_title">SEGUNDA PANTALLA</string>
+    <string name="slide_3_title">TERCERA PANTALLA</string>
+
+    <string name="slide_1_text">We play sports, we watch sports, and we talk about it, Cricketer, Footballer, If you are a sportsperson then bonjour is a nice place for you !></string>
+    <string name="slide_3_text">The best thing about a picture is that it never changes, even when the people in it do. If photgraphy is your passion then bonjour is a nice place for you !</string>
+    <string name="slide_2_text">It doesn’t matter if you’re interested in budget travel, luxury travel, adventure travel, if you are a traveller then bonjour is a nice place for you !</string>
+
+    <string name="slide_1">primero</string>
+    <string name="slide_2">segundo</string>
+    <string name="slide_3">tercero</string>
+    <string name="opening">opening</string>
+
     //NavigationView
     <string name="company_name">Assurant</string>
     <string name="aboutUs">About Us</string>
