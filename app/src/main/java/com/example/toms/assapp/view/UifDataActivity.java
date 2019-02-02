@@ -131,7 +131,6 @@ public class UifDataActivity extends AppCompatActivity {
 
         //Seleccionar los items del spinner
         ArrayList<String> spinnerArray = new ArrayList<>();
-        spinnerArray.add("Tipo");
         spinnerArray.add("DNI");
         spinnerArray.add("Cedula");
         spinnerArray.add("----");
@@ -142,9 +141,7 @@ public class UifDataActivity extends AppCompatActivity {
         spinnerDocumentType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) {
-                    Toast.makeText(UifDataActivity.this, "Debe seleccionar un tipo de documento", Toast.LENGTH_SHORT).show();
-                }
+
             }
 
             @Override

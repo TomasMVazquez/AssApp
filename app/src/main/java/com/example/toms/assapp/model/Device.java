@@ -13,13 +13,16 @@ public class Device {
     private String model;
     private List<String> photoList;
     private Boolean insured;
+    private Boolean finalVerification;
+    private String insuranceDate;
 
     //consturctores
 
     public Device() {
     }
 
-    public Device(String id, String typeDevice, String name, String make, String model, String salesDate, List<String> photoList, Boolean insured) {
+    public Device(String id, String typeDevice, String name, String make, String model,
+                  String salesDate, List<String> photoList, Boolean insured, Boolean finalVerification,String insuranceDate) {
         this.id = id;
         this.typeDevice = typeDevice;
         this.name = name;
@@ -28,9 +31,19 @@ public class Device {
         this.salesDate = salesDate;
         this.photoList = photoList;
         this.insured = insured;
+        this.finalVerification = finalVerification;
+        this.insuranceDate = insuranceDate;
     }
 
     //getter
+
+    public String getInsuranceDate() {
+        return insuranceDate;
+    }
+
+    public Boolean getFinalVerification() {
+        return finalVerification;
+    }
 
     public String getTypeDevice() {
         return typeDevice;
@@ -63,6 +76,21 @@ public class Device {
     public List<String> getPhotoList() {
         return photoList;
     }
+
+    //setter
+
+    public void setFinalVerification(Boolean finalVerification) {
+        this.finalVerification = finalVerification;
+    }
+
+    public void setSalesDate(String salesDate) {
+        this.salesDate = salesDate;
+    }
+
+    public void setPhotoList(List<String> photoList) {
+        this.photoList = photoList;
+    }
+
 
     //tostring
 

@@ -72,18 +72,20 @@
                 android:layout_toEndOf="@id/imageInsurance"
                 android:layout_below="@id/nameDevice"
                 android:layout_marginTop="15dp"
+                android:textColor="@color/colorPrimaryDark"
                 />
 
             <TextView
-                android:id="@+id/premiumDevice"
+                android:id="@+id/timeInsured"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@id/imageInsurance"
                 tools:text="Asegurado por $ 25 diarios"
                 android:layout_marginEnd="5dp"
                 android:layout_marginBottom="5dp"
                 android:textSize="12sp"
+                android:textColor="@color/colorAccentGreen"
                 />
 
             <Switch

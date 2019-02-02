@@ -18,6 +18,7 @@ import com.example.toms.assapp.controller.ControllerFirebaseDataBase;
 import com.example.toms.assapp.model.Device;
 import com.example.toms.assapp.util.ResultListener;
 import com.example.toms.assapp.view.AddNewDevice;
+import com.example.toms.assapp.view.FinalVerification;
 import com.example.toms.assapp.view.LogInActivity;
 import com.example.toms.assapp.view.MainActivity;
 import com.example.toms.assapp.view.adpater.AdapterDeviceRecycler;
@@ -31,6 +32,7 @@ import java.util.List;
 public class MyInsuranceFragment extends Fragment implements AdapterDeviceRecycler.AdaptadorInterface {
 
     public static final int KEY_LOGIN = 202;
+    public static final int KEY_FINAL_VERIF = 203;
     public static final int KEY_ADD_DEVICE = 201;
     public static final String KEY_ID_DB = "db";
 
@@ -109,6 +111,9 @@ public class MyInsuranceFragment extends Fragment implements AdapterDeviceRecycl
                     Toast.makeText(getContext(), "Login exitoso", Toast.LENGTH_SHORT).show();
 
                     break;
+                case KEY_FINAL_VERIF:
+                    Toast.makeText(getContext(), "Verificacion Final exitoso", Toast.LENGTH_SHORT).show();
+                    break;
             }
         }
 
@@ -133,6 +138,15 @@ public class MyInsuranceFragment extends Fragment implements AdapterDeviceRecycl
     public void goToLogIn() {
         Intent intent = new Intent(getContext(), LogInActivity.class);
         startActivityForResult(intent, KEY_LOGIN);
+    }
+
+    @Override
+    public void goToFinalVerification(String id) {
+        Intent intent = new Intent(getContext(), FinalVerification.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(FinalVerification.KEY_ID_DEVICE_DB,id);
+        intent.putExtras(bundle);
+        startActivityForResult(intent, KEY_FINAL_VERIF);
     }
 
     public interface OnFragmentFormNotify{

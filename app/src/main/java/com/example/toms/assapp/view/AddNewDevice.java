@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
@@ -59,6 +60,7 @@ import pl.aprilapps.easyphotopicker.EasyImage;
 public class AddNewDevice extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     public static final String KEY_ID_DB = "db";
+    public static final int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 500;
     public static final int KEY_CAMERA_ONE = 301;
     public static final int KEY_CAMERA_TWO = 302;
     public static final int KEY_CAMERA_THREE = 303;
@@ -72,21 +74,12 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
     private List<String> photoList = new ArrayList<>();
     private String idReferenceGuest;
 
-    private ImageView imageOne;
-    private ImageView imageTwo;
-    private ImageView imageThree;
-    private ImageView imageFour;
 
     private Spinner spinnerSelectTypeDevice;
     private String deviceType;
-    private static EditText addSalesDate;
     private static EditText addName;
-    private static TextInputLayout addTextInputSalesDate;
     private EditText addMake;
     private EditText addModel;
-    private Switch switchInvoice;
-    private TextView textViewInvoiceTitle;
-    private CardView cardViewImageOne;
     private TextView imeiCel;
 
     @Override
@@ -114,44 +107,14 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
         //Views
         Button fabAddDevice = findViewById(R.id.fabAddDevice);
         spinnerSelectTypeDevice = findViewById(R.id.spinnerSelectTypeDevice);
-        imageOne = findViewById(R.id.image_one);
-        imageTwo = findViewById(R.id.image_two);
-        imageThree = findViewById(R.id.image_three);
-        imageFour = findViewById(R.id.image_four);
         TextInputLayout addTextInputName = findViewById(R.id.addTextInputName);
-        addTextInputSalesDate = findViewById(R.id.addTextInputSalesDate);
         TextInputLayout addTextInputMake = findViewById(R.id.addTextInputMake);
         TextInputLayout addTextInputModel = findViewById(R.id.addTextInputModel);
         addName = findViewById(R.id.addDeviceName);
-        addSalesDate = findViewById(R.id.addSalesDate);
         addMake = findViewById(R.id.addMake);
         addModel = findViewById(R.id.addModel);
-        switchInvoice = findViewById(R.id.switchInvoice);
-        textViewInvoiceTitle = findViewById(R.id.textViewInvoiceTitle);
-        cardViewImageOne = findViewById(R.id.cardViewImageOne);
         imeiCel = findViewById(R.id.imeiCel);
 
-        //checking invoice
-        switchInvoice.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                invoiceChecked();
-            }
-        });
-
-        //Adding date piccker for sales date
-        //Stting this on Touch will not allow blind people to use the app (https://www.youtube.com/watch?v=1by5J7c5Vz4&feature=youtu.be)
-        addSalesDate.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        showTruitonDatePickerDialog(v);
-                        return true;
-                }
-                return false;
-            }
-        });
 
         //Seleccionar los items del spinner
         ArrayList<String> spinnerArray = new ArrayList<>();
@@ -170,41 +133,14 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
         spinnerSelectTypeDevice.setAdapter(adapterSpinner);
         spinnerSelectTypeDevice.setOnItemSelectedListener(this);
 
-
-        //Call camera on click imageview
-        imageOne.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EasyImage.openChooserWithGallery(AddNewDevice.this, "Elegir", KEY_CAMERA_ONE);
-            }
-        });
-        imageTwo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EasyImage.openChooserWithGallery(AddNewDevice.this, "Elegir", KEY_CAMERA_TWO);
-            }
-        });
-        imageThree.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EasyImage.openChooserWithGallery(AddNewDevice.this, "Elegir", KEY_CAMERA_THREE);
-            }
-        });
-        imageFour.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EasyImage.openChooserWithGallery(AddNewDevice.this, "Elegir", KEY_CAMERA_FOUR);
-            }
-        });
-
         //Insert Button
         fabAddDevice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (checkInfo()) {
                     Device newDevice = new Device("", deviceType, addName.getText().toString(),
-                            addMake.getText().toString(), addModel.getText().toString(), addSalesDate.getText().toString(),
-                            photoList, false);
+                            addMake.getText().toString(), addModel.getText().toString(), "",
+                            photoList, false,false,"");
                     addDeviceToDataBase(newDevice);
 
                     Intent data = MyInsuranceFragment.dataBaseId(idReferenceGuest);
@@ -216,19 +152,9 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
     }
 
     //Button addDevice
-    public boolean checkInfo() {
+    private boolean checkInfo() {
         if (spinnerSelectTypeDevice.getSelectedItemPosition() == 0) {
             Toast.makeText(this, getResources().getString(R.string.error_not_device_choosen), Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        if (!switchInvoice.isChecked()) {
-            Toast.makeText(this, getResources().getString(R.string.error_not_invoice_checked), Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        if (addSalesDate.getText().length() == 0) {
-            Toast.makeText(this, getResources().getString(R.string.error_not_sales_date), Toast.LENGTH_SHORT).show();
             return false;
         }
 
@@ -247,99 +173,10 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
             return false;
         }
 
-        if (photoList.size() < 4) {
-            Toast.makeText(this, getResources().getString(R.string.error_not_photo), Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
         return true;
     }
 
-
-    //Activity for Result
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        //Photos of devices
-        EasyImage.handleActivityResult(requestCode, resultCode, data, AddNewDevice.this, new EasyImage.Callbacks() {
-            @Override
-            public void onImagePickerError(Exception e, EasyImage.ImageSource imageSource, int i) {
-
-            }
-
-            @Override
-            public void onImagesPicked(@NonNull List<File> list, EasyImage.ImageSource imageSource, int i) {
-                StorageReference raiz = mStorage.getReference();
-
-                if (list.size() > 0) {
-                    File file = list.get(0);
-                    final Uri uri = Uri.fromFile(file);
-                    final Uri uriTemp = Uri.fromFile(new File(uri.getPath()));
-
-                    switch (i) {
-                        case KEY_CAMERA_ONE:
-                            final StorageReference oneFoto = raiz.child(uriTemp.getLastPathSegment());
-                            UploadTask uploadTask = oneFoto.putFile(uriTemp);
-                            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                    photoList.add(uriTemp.getLastPathSegment());
-                                    Glide.with(AddNewDevice.this).load(uri).into(imageOne);
-                                }
-                            });
-                            break;
-                        case KEY_CAMERA_TWO:
-                            final StorageReference twoFoto = raiz.child(uriTemp.getLastPathSegment());
-                            uploadTask = twoFoto.putFile(uriTemp);
-                            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                    photoList.add(uriTemp.getLastPathSegment());
-                                    Glide.with(AddNewDevice.this).load(uri).into(imageTwo);
-                                }
-                            });
-                            break;
-                        case KEY_CAMERA_THREE:
-                            final StorageReference threeFoto = raiz.child(uriTemp.getLastPathSegment());
-                            uploadTask = threeFoto.putFile(uriTemp);
-                            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                    photoList.add(uriTemp.getLastPathSegment());
-                                    Glide.with(AddNewDevice.this).load(uri).into(imageThree);
-                                }
-                            });
-                            break;
-                        case KEY_CAMERA_FOUR:
-                            final StorageReference fourFoto = raiz.child(uriTemp.getLastPathSegment());
-                            uploadTask = fourFoto.putFile(uriTemp);
-                            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                    photoList.add(uriTemp.getLastPathSegment());
-                                    Glide.with(AddNewDevice.this).load(uri).into(imageFour);
-                                }
-                            });
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
-
-            @Override
-            public void onCanceled(EasyImage.ImageSource imageSource, int i) {
-
-            }
-        });
-
-
-    }
-
     //Spinner to select the type
-    @SuppressLint("MissingPermission")
-    @TargetApi(Build.VERSION_CODES.O)
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (position != 0) {
@@ -349,9 +186,22 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
                 addMake.setText(Build.MANUFACTURER);
                 addModel.setText(Build.MODEL);
                 telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-                //TODO CHECK PERMISSION ??
                 imeiCel.setVisibility(View.VISIBLE);
-                imeiCel.setText(telephonyManager.getImei());
+                int permissionCheck = ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.READ_PHONE_STATE);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(this,
+                                new String[]{Manifest.permission.READ_PHONE_STATE},
+                                MY_PERMISSIONS_REQUEST_READ_PHONE_STATE);
+                        return;
+                    } else {
+                        imeiCel.setText(telephonyManager.getImei());
+                    }
+                }else {
+                    imeiCel.setText(telephonyManager.getDeviceId());
+                }
             }else {
                 imeiCel.setText("");
                 addMake.setText("");
@@ -367,74 +217,6 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
     }
 
 
-    //Date Picker Comands - for purchase date
-    public static class DatePickerFragment extends DialogFragment implements
-            DatePickerDialog.OnDateSetListener {
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the current date as the default date in the picker
-            final Calendar c = Calendar.getInstance();
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH);
-            int day = c.get(Calendar.DAY_OF_MONTH);
-
-            // Create a new instance of DatePickerDialog and return it
-            return new DatePickerDialog(getActivity(), this, year, month, day);
-        }
-
-        @Override
-        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-            // Do something with the date chosen by the user
-            String dateChoosen=(dayOfMonth + "/" + (month + 1) + "/" + year);
-            SimpleDateFormat simpledateformat = new SimpleDateFormat("dd/MM/yyyy");
-            try {
-                Date salesDate = simpledateformat.parse(dateChoosen);
-                SimpleDateFormat y = new SimpleDateFormat("yyyy");
-                SimpleDateFormat d = new SimpleDateFormat("dd");
-                SimpleDateFormat m = new SimpleDateFormat("MM");
-                Date today = new Date();
-                String limitYear = String.valueOf(Integer.valueOf(y.format(today))-1);
-                String limitDay = d.format(today);
-                String limitMonth = m.format(today);
-                Date limitDate = simpledateformat.parse((limitDay + "/" + limitMonth + "/" + limitYear));
-
-                if (salesDate.before(limitDate)){
-                    addTextInputSalesDate.setError(getResources().getString(R.string.sales_date_error));
-                    addSalesDate.setText("");
-                    addName.requestFocus();
-                }else {
-                    addTextInputSalesDate.setError("");
-                    addSalesDate.setText(dateChoosen);
-                    addName.requestFocus();
-                }
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void showTruitonDatePickerDialog(View v) {
-        DialogFragment newFragment = new DatePickerFragment();
-        newFragment.show(getSupportFragmentManager(), "datePicker");
-    }
-
-    //Switch
-    public void invoiceChecked(){
-        if (switchInvoice.isChecked()){
-            textViewInvoiceTitle.setVisibility(View.VISIBLE);
-            addSalesDate.setVisibility(View.VISIBLE);
-            addTextInputSalesDate.setVisibility(View.VISIBLE);
-            cardViewImageOne.setVisibility(View.VISIBLE);
-            imageOne.setVisibility(View.VISIBLE);
-        }else {
-            textViewInvoiceTitle.setVisibility(View.GONE);
-            addSalesDate.setVisibility(View.GONE);
-            addTextInputSalesDate.setVisibility(View.GONE);
-            cardViewImageOne.setVisibility(View.GONE);
-            imageOne.setVisibility(View.GONE);
-        }
-    }
 
     //Add to Database Firebase
     public void addDeviceToDataBase(Device device){
@@ -450,7 +232,30 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
         device.setId(idDataBase);
 
         idDevices.setValue(new Device(device.getId(),device.getTypeDevice(),device.getName(),device.getMake(),device.getModel()
-                ,device.getSalesDate(),device.getPhotoList(),device.getInsured()));
+                ,device.getSalesDate(),device.getPhotoList(),device.getInsured(),device.getFinalVerification(),device.getInsuranceDate()));
+    }
+
+    //Permiso para sacar IMEI
+    @TargetApi(Build.VERSION_CODES.O)
+    @SuppressLint({"MissingPermission", "NewApi"})
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults){
+
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_READ_PHONE_STATE:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay!
+                    imeiCel.setText(telephonyManager.getImei());
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    Toast.makeText(this, "Necesitamos tu permiso para tomar el IMEI de tu equipo", Toast.LENGTH_SHORT).show();
+                }
+                return;
+        }
+
     }
 
 }
