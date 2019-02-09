@@ -183,10 +183,6 @@ public class UifDataActivity extends AppCompatActivity {
     }
 
     public Boolean checkInfo(){
-        if (spinnerDocumentType.getSelectedItemPosition() == 0) {
-            Toast.makeText(this, "Missing info", Toast.LENGTH_SHORT).show();
-            return false;
-        }
 
         if (addBirth.getText().length() == 0) {
             Toast.makeText(this, "Missing info", Toast.LENGTH_SHORT).show();

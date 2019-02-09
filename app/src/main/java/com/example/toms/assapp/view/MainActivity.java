@@ -193,7 +193,7 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
             }
             updateUI(currentUser);
         }else {
-            Toast.makeText(this, "Fallo LogIn", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Fallo LogIn", Toast.LENGTH_SHORT).show();
         }
 
     }

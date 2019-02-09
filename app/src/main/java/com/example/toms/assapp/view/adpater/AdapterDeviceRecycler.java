@@ -1,6 +1,8 @@
 package com.example.toms.assapp.view.adpater;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -34,6 +36,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class AdapterDeviceRecycler extends RecyclerView.Adapter {
 
@@ -134,65 +138,13 @@ public class AdapterDeviceRecycler extends RecyclerView.Adapter {
                 @Override
                 public void onClick(View v) {
                     if (MainActivity.isLogon(context)) {
-                        final DatabaseReference deviceDb = mReference.child(MainActivity.showId()).child(context.getResources().getString(R.string.device_reference_child)).child(idDevice.getText().toString());
-                        final DatabaseReference idDeviceInsured = mReference.child(MainActivity.showId()).child(context.getResources().getString(R.string.device_reference_child)).child(idDevice.getText().toString()).child("insured");
-                        final DatabaseReference idinsuranceDate = mReference.child(MainActivity.showId()).child(context.getResources().getString(R.string.device_reference_child)).child(idDevice.getText().toString()).child("insuranceDate");
-                        DatabaseReference idVerif = mReference.child(MainActivity.showId()).child(context.getResources().getString(R.string.device_reference_child)).child(idDevice.getText().toString()).child("finalVerification");
-                        if (switchInsurance.isChecked()) {
-                            idVerif.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    Boolean check = (Boolean) dataSnapshot.getValue();
-                                    if (check){
-                                        SimpleDateFormat y = new SimpleDateFormat("yyyy");
-                                        SimpleDateFormat d = new SimpleDateFormat("dd");
-                                        SimpleDateFormat m = new SimpleDateFormat("MM");
-                                        Date today = new Date();
-                                        String year = String.valueOf(Integer.valueOf(y.format(today))-1);
-                                        String day = d.format(today);
-                                        String month = m.format(today);
-                                        String insuranceDate = (day + "/" + month + "/" + year);
-                                        idinsuranceDate.setValue(insuranceDate);
-                                        shield.setVisibility(View.VISIBLE);
-                                        Toast.makeText(context, "El seguro de su " + name.getText().toString() + " esta Activo", Toast.LENGTH_SHORT).show();
-                                        idDeviceInsured.setValue(true);
-
-                                        deviceDb.addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                Device device = dataSnapshot.getValue(Device.class);
-                                                daysCalculation(device);
-                                            }
-
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                            }
-                                        });
-
-                                    }else {
-                                        adaptadorInterface.goToFinalVerification(idDevice.getText().toString());
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
-
-                        } else {
-                            shield.setVisibility(View.INVISIBLE);
-                            Toast.makeText(context, "El seguro de su " + name.getText().toString() + " ah sido desactivado", Toast.LENGTH_SHORT).show();
-                            idDeviceInsured.setValue(false);
-                            idinsuranceDate.setValue("");
-                            timeInsured.setText("");
-                        }
+                        clickInsurance();
                     }else {
                         switchInsurance.setChecked(false);
-                        Toast.makeText(context, "Debes estar logeado para asegurar tu equipo", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Primero debes estar logeado para asegurar tu equipo", Toast.LENGTH_SHORT).show();
                         adaptadorInterface.goToLogIn();
                     }
+
                 }
             });
 
@@ -204,6 +156,91 @@ public class AdapterDeviceRecycler extends RecyclerView.Adapter {
 
                 }
             });
+        }
+
+        private void confirmDialogDemo() {
+            final DatabaseReference deviceDb = mReference.child(MainActivity.showId()).child(context.getResources().getString(R.string.device_reference_child)).child(idDevice.getText().toString());
+            final DatabaseReference idDeviceInsured = mReference.child(MainActivity.showId()).child(context.getResources().getString(R.string.device_reference_child)).child(idDevice.getText().toString()).child("insured");
+            final DatabaseReference idinsuranceDate = mReference.child(MainActivity.showId()).child(context.getResources().getString(R.string.device_reference_child)).child(idDevice.getText().toString()).child("insuranceDate");
+            DatabaseReference idVerif = mReference.child(MainActivity.showId()).child(context.getResources().getString(R.string.device_reference_child)).child(idDevice.getText().toString()).child("finalVerification");
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Confirmación");
+            builder.setMessage("Por favor confirmar que usted quiere asegurar su equipo");
+            builder.setCancelable(false);
+            builder.setIcon(context.getDrawable(R.drawable.escudo_grey));
+            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    SimpleDateFormat y = new SimpleDateFormat("yyyy");
+                    SimpleDateFormat d = new SimpleDateFormat("dd");
+                    SimpleDateFormat m = new SimpleDateFormat("MM");
+                    Date today = new Date();
+                    String year = String.valueOf(Integer.valueOf(y.format(today))-1);
+                    String day = d.format(today);
+                    String month = m.format(today);
+                    String insuranceDate = (day + "/" + month + "/" + year);
+                    idinsuranceDate.setValue(insuranceDate);
+                    shield.setVisibility(View.VISIBLE);
+                    Toast.makeText(context, "El seguro de su " + name.getText().toString() + " esta Activo", Toast.LENGTH_SHORT).show();
+                    idDeviceInsured.setValue(true);
+
+                    deviceDb.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            Device device = dataSnapshot.getValue(Device.class);
+                            daysCalculation(device);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            });
+
+            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switchInsurance.setChecked(false);
+                    Toast.makeText(getApplicationContext(), "Su seguro NO se activó", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            builder.show();
+        }
+
+        public void clickInsurance(){
+            final DatabaseReference deviceDb = mReference.child(MainActivity.showId()).child(context.getResources().getString(R.string.device_reference_child)).child(idDevice.getText().toString());
+            final DatabaseReference idDeviceInsured = mReference.child(MainActivity.showId()).child(context.getResources().getString(R.string.device_reference_child)).child(idDevice.getText().toString()).child("insured");
+            final DatabaseReference idinsuranceDate = mReference.child(MainActivity.showId()).child(context.getResources().getString(R.string.device_reference_child)).child(idDevice.getText().toString()).child("insuranceDate");
+            DatabaseReference idVerif = mReference.child(MainActivity.showId()).child(context.getResources().getString(R.string.device_reference_child)).child(idDevice.getText().toString()).child("finalVerification");
+            if (switchInsurance.isChecked()) {
+                idVerif.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Boolean check = (Boolean) dataSnapshot.getValue();
+                        if (check){
+                            confirmDialogDemo();
+                        }else {
+                            adaptadorInterface.goToFinalVerification(idDevice.getText().toString());
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+            } else {
+                shield.setVisibility(View.INVISIBLE);
+                Toast.makeText(context, "El seguro de su " + name.getText().toString() + " ah sido desactivado", Toast.LENGTH_SHORT).show();
+                idDeviceInsured.setValue(false);
+                idinsuranceDate.setValue("");
+                timeInsured.setText("");
+            }
         }
 
         public void cargar(final Context context, Device device){

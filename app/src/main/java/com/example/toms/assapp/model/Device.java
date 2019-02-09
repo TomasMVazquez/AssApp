@@ -79,6 +79,14 @@ public class Device {
 
     //setter
 
+    public void setInsuranceDate(String insuranceDate) {
+        this.insuranceDate = insuranceDate;
+    }
+
+    public void setInsured(Boolean insured) {
+        this.insured = insured;
+    }
+
     public void setFinalVerification(Boolean finalVerification) {
         this.finalVerification = finalVerification;
     }

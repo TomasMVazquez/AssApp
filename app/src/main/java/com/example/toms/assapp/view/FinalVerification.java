@@ -3,6 +3,7 @@ package com.example.toms.assapp.view;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -18,6 +19,8 @@ import android.support.v7.widget.CardView;
 import android.telephony.TelephonyManager;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
@@ -39,6 +42,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -49,6 +53,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import pl.aprilapps.easyphotopicker.EasyImage;
 
@@ -159,6 +166,8 @@ public class FinalVerification extends AppCompatActivity {
             }
         });
 
+
+
         //Call camera on click imageview
         imageOne.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -169,6 +178,7 @@ public class FinalVerification extends AppCompatActivity {
         imageTwo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 EasyImage.openChooserWithGallery(FinalVerification.this, "Elegir", KEY_CAMERA_TWO);
             }
         });
@@ -198,6 +208,16 @@ public class FinalVerification extends AppCompatActivity {
                             modifyDevice.setSalesDate(addSalesDate.getText().toString());
                             modifyDevice.setPhotoList(photoList);
                             modifyDevice.setFinalVerification(true);
+                            modifyDevice.setInsured(true);
+                            SimpleDateFormat y = new SimpleDateFormat("yyyy");
+                            SimpleDateFormat d = new SimpleDateFormat("dd");
+                            SimpleDateFormat m = new SimpleDateFormat("MM");
+                            Date today = new Date();
+                            String year = String.valueOf(Integer.valueOf(y.format(today))-1);
+                            String day = d.format(today);
+                            String month = m.format(today);
+                            String insuranceDate = (day + "/" + month + "/" + year);
+                            modifyDevice.setInsuranceDate(insuranceDate);
                             device.setValue(modifyDevice);
                             continueActivity();
                         }
@@ -295,6 +315,14 @@ public class FinalVerification extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        //Progess dialog
+        final ProgressDialog prog= new ProgressDialog(FinalVerification.this);
+        prog.setTitle("Por favor espere");
+        prog.setMessage("Estamos cargando su imagen");
+        prog.setCancelable(false);
+        prog.setIndeterminate(true);
+        prog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
         //Photos of devices
         EasyImage.handleActivityResult(requestCode, resultCode, data, FinalVerification.this, new EasyImage.Callbacks() {
             @Override
@@ -315,44 +343,76 @@ public class FinalVerification extends AppCompatActivity {
                         case KEY_CAMERA_ONE:
                             final StorageReference oneFoto = raiz.child(uriTemp.getLastPathSegment());
                             UploadTask uploadTask = oneFoto.putFile(uriTemp);
-                            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                                    prog.show();
+                                    //double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                                    //System.out.println("Upload is " + progress + "% done");
+                                }
+                            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                 @Override
                                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                     photoList.add(uriTemp.getLastPathSegment());
                                     Glide.with(FinalVerification.this).load(uri).into(imageOne);
+                                    prog.dismiss();
                                 }
                             });
                             break;
                         case KEY_CAMERA_TWO:
                             final StorageReference twoFoto = raiz.child(uriTemp.getLastPathSegment());
                             uploadTask = twoFoto.putFile(uriTemp);
-                            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                                    prog.show();
+                                    //double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                                    //System.out.println("Upload is " + progress + "% done");
+                                }
+                            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                 @Override
                                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                     photoList.add(uriTemp.getLastPathSegment());
                                     Glide.with(FinalVerification.this).load(uri).into(imageTwo);
+                                    prog.dismiss();
                                 }
                             });
                             break;
                         case KEY_CAMERA_THREE:
                             final StorageReference threeFoto = raiz.child(uriTemp.getLastPathSegment());
                             uploadTask = threeFoto.putFile(uriTemp);
-                            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                                    prog.show();
+                                    //double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                                    //System.out.println("Upload is " + progress + "% done");
+                                }
+                            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                 @Override
                                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                     photoList.add(uriTemp.getLastPathSegment());
                                     Glide.with(FinalVerification.this).load(uri).into(imageThree);
+                                    prog.dismiss();
                                 }
                             });
                             break;
                         case KEY_CAMERA_FOUR:
                             final StorageReference fourFoto = raiz.child(uriTemp.getLastPathSegment());
                             uploadTask = fourFoto.putFile(uriTemp);
-                            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                                    prog.show();
+                                    //double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                                    //System.out.println("Upload is " + progress + "% done");
+                                }
+                            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                 @Override
                                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                     photoList.add(uriTemp.getLastPathSegment());
                                     Glide.with(FinalVerification.this).load(uri).into(imageFour);
+                                    prog.dismiss();
                                 }
                             });
                             break;
@@ -367,10 +427,15 @@ public class FinalVerification extends AppCompatActivity {
 
             }
         });
-
-
     }
+    public void esperarYCerrar(Integer milisegundos) {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
 
+            }
+        }, milisegundos);
+    }
 
     //Date Picker Comands - for purchase date
     public static class DatePickerFragment extends DialogFragment implements
