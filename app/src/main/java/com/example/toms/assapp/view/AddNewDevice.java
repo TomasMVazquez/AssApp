@@ -38,7 +38,9 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.toms.assapp.R;
+import com.example.toms.assapp.controller.ControllerPricing;
 import com.example.toms.assapp.model.Device;
+import com.example.toms.assapp.util.ResultListener;
 import com.example.toms.assapp.view.fragments.MyInsuranceFragment;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
@@ -81,6 +83,7 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
     private EditText addMake;
     private EditText addModel;
     private TextView imeiCel;
+    private TextView insurancePrice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +117,7 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
         addMake = findViewById(R.id.addMake);
         addModel = findViewById(R.id.addModel);
         imeiCel = findViewById(R.id.imeiCel);
-
+        insurancePrice = findViewById(R.id.insurancePrice);
 
         //Seleccionar los items del spinner
         ArrayList<String> spinnerArray = new ArrayList<>();
@@ -181,6 +184,16 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (position != 0) {
             deviceType = parent.getItemAtPosition(position).toString();
+
+            ControllerPricing controllerPricing = new ControllerPricing();
+            controllerPricing.givePricing(deviceType, new ResultListener<Double>() {
+                @Override
+                public void finish(Double resultado) {
+                    String price = "$ " + resultado + " /mes";
+                    insurancePrice.setText(price);
+                }
+            });
+
             //Toast.makeText(this, parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
             if (position == 1) {
                 addMake.setText(Build.MANUFACTURER);

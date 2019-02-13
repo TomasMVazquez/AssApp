@@ -8,6 +8,10 @@ public class DeviceConteiner {
     private List<Device> deviceList;
 
     //constructor
+
+    public DeviceConteiner() {
+    }
+
     public DeviceConteiner(List<Device> deviceList) {
         this.deviceList = deviceList;
     }
@@ -18,7 +22,6 @@ public class DeviceConteiner {
     }
 
     //tostring
-
     @Override
     public String toString() {
         return "DeviceConteiner{" +

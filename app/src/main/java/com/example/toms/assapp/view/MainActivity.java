@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -40,7 +39,7 @@ import com.google.firebase.storage.StorageReference;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements MyInsuranceFragment.OnFragmentFormNotify {
+public class MainActivity extends AppCompatActivity implements MyInsuranceFragment.OnFragmentNotify {
 
     public static final int KEY_LOGIN=101;
     public static final String KEY_NAME = "name";
@@ -322,6 +321,7 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
     public void showIdGuest(String id) {
         idDataBase = id;
     }
+
 
     public static String showId(){
         return idDataBase;

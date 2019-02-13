@@ -1,6 +1,7 @@
 package com.example.toms.assapp.view;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.preference.PreferenceManager;
@@ -111,6 +112,14 @@ public class LogInActivity extends AppCompatActivity {
 
     private void handleFacebookAccessToken(AccessToken token) {
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        //Progess dialog
+        final ProgressDialog prog= new ProgressDialog(LogInActivity.this);
+        prog.setTitle("Por favor espere");
+        prog.setMessage("Estamos cargando su imagen");
+        prog.setCancelable(false);
+        prog.setIndeterminate(true);
+        prog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        prog.show();
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -137,6 +146,7 @@ public class LogInActivity extends AppCompatActivity {
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.exists()){
                                         Intent info = MainActivity.respuestaLogin(user.getDisplayName());
+                                        prog.dismiss();
                                         setResult(Activity.RESULT_OK,info);
                                         finish();
                                     }else {
@@ -146,21 +156,23 @@ public class LogInActivity extends AppCompatActivity {
                                         bundle.putString(UifDataActivity.KEY_PHONE,user.getPhoneNumber());
                                         bundle.putString(UifDataActivity.KEY_FULL_NAME,user.getDisplayName());
                                         intent.putExtras(bundle);
+                                        prog.dismiss();
                                         startActivityForResult(intent, KEY_UIF);
                                     }
                                 }
 
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                                    prog.dismiss();
                                 }
                             });
 
                         } else {
                             // If sign in fails, display a message to the user.
                             updateUI(null);
+                            prog.dismiss();
                         }
-
+                        prog.dismiss();
                         // ...
                     }
                 });

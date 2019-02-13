@@ -24,7 +24,7 @@
         app:fabSize="normal"
         android:src="@drawable/ic_add_black"
         app:maxImageSize="36dp"
-        android:layout_gravity="bottom|end"
+        android:layout_gravity="bottom|center"
         android:elevation="6dp"
         android:background="@color/colorAccentOrange"
         />

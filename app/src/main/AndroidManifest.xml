@@ -41,13 +41,16 @@
         //facebook fin
         <activity
             android:name=".view.MainActivity"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.AddNewDevice"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"
+            android:screenOrientation="portrait" />
         <activity android:name=".view.LogInActivity" />
         <activity
             android:name=".view.SplashActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -55,9 +58,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.WelcomeActivity" />
-        <activity android:name=".view.UifDataActivity" />
-        <activity android:name=".view.FinalVerification"></activity>
+        <activity android:name=".view.WelcomeActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".view.UifDataActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".view.FinalVerification"
+            android:screenOrientation="portrait" />
+        <activity android:name=".view.DeviceDetail"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

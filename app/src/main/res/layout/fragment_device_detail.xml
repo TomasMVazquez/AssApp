@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".view.fragments.DeviceDetailFragment"
+    android:orientation="vertical"
+    android:layout_margin="10dp">
+
+    <TextView
+        android:id="@+id/titleDetail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Mi Equipo"
+        android:gravity="center"
+        android:textSize="25sp"
+        android:textColor="@color/colorAccentOrange"
+        android:textStyle="bold"
+        android:layout_marginBottom="10dp"
+        />
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardViewDetail"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="2dp"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        app:cardCornerRadius="15dp"
+        android:elevation="6dp"
+        >
+        <ImageView
+            android:id="@+id/imageDetail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/assurant_logo_rgb"
+            android:scaleType="centerCrop"
+            />
+    </android.support.v7.widget.CardView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp"
+        >
+
+        <TextView
+            android:id="@+id/tvDetailType"
+            android:layout_width="0dp"
+            android:layout_weight="33"
+            android:layout_height="wrap_content"
+            tools:text="Equipo de audio"
+            android:textSize="14sp"
+            android:textColor="@color/colorBlack"
+            />
+
+        <TextView
+            android:id="@+id/tvDetailMake"
+            android:layout_width="0dp"
+            android:layout_weight="33"
+            android:layout_height="wrap_content"
+            tools:text="SAMSUNG"
+            android:textSize="14sp"
+            android:textColor="@color/colorBlack"
+            />
+
+        <TextView
+            android:id="@+id/tvDetailModel"
+            android:layout_width="0dp"
+            android:layout_weight="33"
+            android:layout_height="wrap_content"
+            tools:text="Galaxy s9"
+            android:ellipsize="marquee"
+            android:textSize="14sp"
+            android:textColor="@color/colorBlack"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:text="@string/device_price_title"
+            android:textColor="@color/colorPrimary"
+            />
+
+        <TextView
+            android:id="@+id/tvDetailPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:layout_marginEnd="15dp"
+            android:textSize="18sp"
+            android:text="$ 50.5 /mes"
+            android:textColor="@color/colorPrimary"
+            />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvDetailTimeInsured"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="30 dias restantes"
+        android:layout_marginBottom="15dp"
+        android:textSize="12sp"
+        android:textColor="@color/colorAccentGreen"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="15dp"
+        >
+        <View
+            android:layout_width="0dp"
+            android:layout_weight="20"
+            android:layout_height="1dp"
+            android:background="@color/colorGrey"
+            android:layout_gravity="center"
+            />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="60"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:text="@string/coverage_titel"
+            android:textColor="@color/colorAccentGreen"
+            />
+        <View
+            android:layout_width="0dp"
+            android:layout_weight="20"
+            android:layout_height="1dp"
+            android:background="@color/colorGrey"
+            android:layout_gravity="center"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="15dp"
+        android:weightSum="90"
+        >
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_weight="30"
+            android:layout_height="wrap_content"
+            android:src="@drawable/accidental_damage"
+            />
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_weight="30"
+            android:layout_height="wrap_content"
+            android:src="@drawable/theft"
+            android:layout_gravity="bottom"
+            />
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_weight="30"
+            android:layout_height="wrap_content"
+            android:src="@drawable/mecanical"
+            android:layout_gravity="bottom"
+            />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorGrey"
+        android:layout_gravity="center"
+        android:layout_marginBottom="20dp"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:text="@string/text_download"
+        android:textColor="@color/colorPrimary"
+        android:layout_marginBottom="15dp"
+        />
+
+    <TextView
+        android:id="@+id/tvLink"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:linksClickable="true"
+        android:text="@string/link"
+        android:textColor="@color/colorAccentOrange"
+        />
+
+</LinearLayout>

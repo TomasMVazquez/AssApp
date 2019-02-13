@@ -2,12 +2,15 @@ package com.example.toms.assapp.view.fragments;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +20,15 @@ import com.example.toms.assapp.R;
 import com.example.toms.assapp.controller.ControllerFirebaseDataBase;
 import com.example.toms.assapp.model.Device;
 import com.example.toms.assapp.util.ResultListener;
+import com.example.toms.assapp.util.SwipeAndDragHelper;
 import com.example.toms.assapp.view.AddNewDevice;
+import com.example.toms.assapp.view.DeviceDetail;
 import com.example.toms.assapp.view.FinalVerification;
 import com.example.toms.assapp.view.LogInActivity;
 import com.example.toms.assapp.view.MainActivity;
 import com.example.toms.assapp.view.adpater.AdapterDeviceRecycler;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +45,7 @@ public class MyInsuranceFragment extends Fragment implements AdapterDeviceRecycl
 
     private String idDataBase;
     private AdapterDeviceRecycler adapterDeviceRecycler;
+    private List<Device> deviceList = new ArrayList<>();
 
     public MyInsuranceFragment() {
         // Required empty public constructor
@@ -64,6 +72,7 @@ public class MyInsuranceFragment extends Fragment implements AdapterDeviceRecycl
                 public void finish(List<Device> resultado) {
                     if (resultado.size() > 0) {
                         adapterDeviceRecycler.setDeviceList(resultado);
+                        deviceList.addAll(resultado);
                     }
                 }
             });
@@ -75,6 +84,43 @@ public class MyInsuranceFragment extends Fragment implements AdapterDeviceRecycl
         LinearLayoutManager llm =new LinearLayoutManager(view.getContext(),LinearLayoutManager.VERTICAL,false);
         recyclerDevices.setLayoutManager(llm);
         recyclerDevices.setAdapter(adapterDeviceRecycler);
+
+        //Swipe and Drag
+        SwipeAndDragHelper swipeAndDragHelper =new SwipeAndDragHelper(new SwipeAndDragHelper.ActionCompletionContract() {
+            @Override
+            public void onViewMoved(int oldPosition, int newPosition) {
+
+            }
+
+            @Override
+            public void onViewSwiped(final int position) {
+                final Device device = deviceList.get(position);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Confirmación");
+                builder.setMessage("Por favor confirmar que usted quiere quitar este equipo de su lista");
+                builder.setCancelable(false);
+                builder.setIcon(getActivity().getDrawable(R.drawable.escudo_grey));
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                       adapterDeviceRecycler.eliminarReceta(position);
+                    }
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        adapterDeviceRecycler.noRemoverReceta(device,position);
+                    }
+                });
+
+                builder.show();
+            }
+        });
+
+        ItemTouchHelper touchHelper = new ItemTouchHelper(swipeAndDragHelper);
+        adapterDeviceRecycler.setTouchHelper(touchHelper);
+        touchHelper.attachToRecyclerView(recyclerDevices);
 
         //actions
         fabAddInsurance.setOnClickListener(new View.OnClickListener() {
@@ -103,7 +149,7 @@ public class MyInsuranceFragment extends Fragment implements AdapterDeviceRecycl
                     Bundle bundle = data.getExtras();
                     idDataBase = bundle.getString(KEY_ID_DB);
                     if (idDataBase != null){
-                        OnFragmentFormNotify onFragmentFormNotify= (OnFragmentFormNotify) getContext();
+                        OnFragmentNotify onFragmentFormNotify= (OnFragmentNotify) getContext();
                         onFragmentFormNotify.showIdGuest(idDataBase);
                     }
                     break;
@@ -131,7 +177,11 @@ public class MyInsuranceFragment extends Fragment implements AdapterDeviceRecycl
 
     @Override
     public void goToDetails(Device device, Integer position) {
-        //TODO ir al detalle
+        Intent intent = new Intent(getActivity(),DeviceDetail.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt(DeviceDetailFragment.KEY_POSITION,position);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     @Override
@@ -149,7 +199,7 @@ public class MyInsuranceFragment extends Fragment implements AdapterDeviceRecycl
         startActivityForResult(intent, KEY_FINAL_VERIF);
     }
 
-    public interface OnFragmentFormNotify{
+    public interface OnFragmentNotify {
         public void showIdGuest(String id);
     }
 

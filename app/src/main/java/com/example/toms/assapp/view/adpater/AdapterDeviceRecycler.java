@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,10 @@ import com.example.toms.assapp.R;
 import com.example.toms.assapp.controller.ControllerPricing;
 import com.example.toms.assapp.model.Device;
 import com.example.toms.assapp.util.ResultListener;
+import com.example.toms.assapp.util.SwipeAndDragHelper;
+import com.example.toms.assapp.view.DeviceDetail;
 import com.example.toms.assapp.view.MainActivity;
+import com.example.toms.assapp.view.fragments.MyInsuranceFragment;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -31,10 +35,8 @@ import com.google.firebase.storage.StorageReference;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -49,10 +51,10 @@ public class AdapterDeviceRecycler extends RecyclerView.Adapter {
     private List<Device> deviceList;
     private Context context;
     protected AdaptadorInterface adaptadorInterface;
+    private ItemTouchHelper touchHelper;
+    private DeviceViewHolder deviceViewHolder;
 
     //Constructor
-
-
     public AdapterDeviceRecycler(List<Device> deviceList, AdaptadorInterface adaptadorInterface) {
         this.deviceList = deviceList;
         this.adaptadorInterface = adaptadorInterface;
@@ -101,10 +103,16 @@ public class AdapterDeviceRecycler extends RecyclerView.Adapter {
         return deviceList.size();
     }
 
+    //Creamos metodo para asignar el Helper
+    public void setTouchHelper(ItemTouchHelper touchHelper){
+        this.touchHelper = touchHelper;
+    }
+
     public interface AdaptadorInterface{
         void goToDetails(Device device, Integer position);
         void goToLogIn();
         void goToFinalVerification(String id);
+
     }
 
     public class DeviceViewHolder extends RecyclerView.ViewHolder{
@@ -118,7 +126,7 @@ public class AdapterDeviceRecycler extends RecyclerView.Adapter {
         private ImageView shield;
         private Switch switchInsurance;
 
-        public DeviceViewHolder(@NonNull View itemView) {
+        public DeviceViewHolder(@NonNull final View itemView) {
             super(itemView);
 
             idDevice = itemView.findViewById(R.id.idDevice);
@@ -152,8 +160,9 @@ public class AdapterDeviceRecycler extends RecyclerView.Adapter {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //TODO IR AL DETALLE
-
+                    Device device = deviceList.get(getAdapterPosition());
+                    Integer position = deviceList.indexOf(device);
+                    adaptadorInterface.goToDetails(device,position);
                 }
             });
         }
@@ -313,4 +322,19 @@ public class AdapterDeviceRecycler extends RecyclerView.Adapter {
 
     }
 
+    //--------Metodo para eliminar recetas con el Swipe----------------------------------------//
+    public void eliminarReceta (int posicion){
+        mDatabase = FirebaseDatabase.getInstance();
+        mReference = mDatabase.getReference();
+        final DatabaseReference deviceDb = mReference.child(MainActivity.showId()).child(context.getResources().getString(R.string.device_reference_child)).child(deviceList.get(posicion).getId());
+        deviceDb.removeValue();
+        deviceList.remove(posicion);
+        notifyItemRemoved(posicion);
+    }
+
+    //--------Metodo para volver a agregar la receta que se elimino------------------------------//
+    public void noRemoverReceta (Device device, int posicion){
+        deviceList.add(posicion,device);
+        notifyItemInserted(posicion);
+    }
 }
