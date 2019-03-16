@@ -7,9 +7,10 @@
     <string name="slide_1_title">PRIMERA PANTALLA</string>
     <string name="slide_2_title">SEGUNDA PANTALLA</string>
     <string name="slide_3_title">TERCERA PANTALLA</string>
-    <string name="slide_1_text">We play sports, we watch sports, and we talk about it, Cricketer, Footballer, If you are a sportsperson then bonjour is a nice place for you !></string>
-    <string name="slide_3_text">The best thing about a picture is that it never changes, even when the people in it do. If photgraphy is your passion then bonjour is a nice place for you !</string>
-    <string name="slide_2_text">It doesn’t matter if you’re interested in budget travel, luxury travel, adventure travel, if you are a traveller then bonjour is a nice place for you !</string>
+    <string name="slide_1_text">Assurant te permite asegurar tus equipos en 3 simples pasos, y activar la cobertura cuando más lo necesitás</string>
+    <string name="slide_3_text">Si activás la cobertura, tu equipo estará protegido. No se te cobra cuando no está activada la cobertura</string>
+    <string name="slide_3_text_2">Protegemos las cosas. Servimos a la gente</string>
+    <string name="slide_2_text">Con los datos de tu equipo, te decimos lo que tenés que pagar por mes, y vos decidís cual es la mejor cobertura para vos</string>
     <string name="slide_1">primero</string>
     <string name="slide_2">segundo</string>
     <string name="slide_3">tercero</string>

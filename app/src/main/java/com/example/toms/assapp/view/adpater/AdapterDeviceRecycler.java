@@ -20,10 +20,7 @@ import com.example.toms.assapp.R;
 import com.example.toms.assapp.controller.ControllerPricing;
 import com.example.toms.assapp.model.Device;
 import com.example.toms.assapp.util.ResultListener;
-import com.example.toms.assapp.util.SwipeAndDragHelper;
-import com.example.toms.assapp.view.DeviceDetail;
 import com.example.toms.assapp.view.MainActivity;
-import com.example.toms.assapp.view.fragments.MyInsuranceFragment;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -271,8 +268,18 @@ public class AdapterDeviceRecycler extends RecyclerView.Adapter {
             }
 
             if (device.getInsured()==true){
-                switchInsurance.setChecked(true);
-                shield.setVisibility(View.VISIBLE);
+                if (daysInsured(device)>0) {
+                    switchInsurance.setChecked(true);
+                    shield.setVisibility(View.VISIBLE);
+                }else {
+                    switchInsurance.setChecked(false);
+                    shield.setVisibility(View.INVISIBLE);
+                    final DatabaseReference idDeviceInsured = mReference.child(MainActivity.showId()).child(context.getResources().getString(R.string.device_reference_child)).child(device.getId()).child("insured");
+                    final DatabaseReference idinsuranceDate = mReference.child(MainActivity.showId()).child(context.getResources().getString(R.string.device_reference_child)).child(device.getId()).child("insuranceDate");
+                    idDeviceInsured.setValue(false);
+                    idinsuranceDate.setValue("");
+                    Toast.makeText(context, "El seguro de su " + device.getName() + " ah cumplido los 30 días y se ah desactivado la protección", Toast.LENGTH_LONG).show();
+                }
             }else {
                 switchInsurance.setChecked(false);
                 shield.setVisibility(View.INVISIBLE);
@@ -294,6 +301,29 @@ public class AdapterDeviceRecycler extends RecyclerView.Adapter {
 
         }
 
+        public long daysInsured(Device device){
+            String insuranceDate = device.getInsuranceDate();
+            if (!insuranceDate.isEmpty()) {
+
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                Date myDate = null;
+                try {
+                    myDate = dateFormat.parse(insuranceDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                Date today = new Date();
+                long timeDiff = today.getTime() - myDate.getTime();
+                TimeUnit unit = TimeUnit.DAYS;
+                long diference = unit.convert(timeDiff, TimeUnit.MILLISECONDS);
+                long daysRestantes = 395 - diference;
+                return daysRestantes;
+            }else {
+                return 0;
+            }
+        }
+
         public void daysCalculation(Device device){
             String insuranceDate = device.getInsuranceDate();
             if (!insuranceDate.isEmpty()){
@@ -312,9 +342,13 @@ public class AdapterDeviceRecycler extends RecyclerView.Adapter {
                 long diference = unit.convert(timeDiff,TimeUnit.MILLISECONDS);
                 long daysRestantes = 395 - diference;
 
-                String time = daysRestantes + " días restantes";
+                if (daysRestantes<= 0){
 
-                timeInsured.setText(time);
+                }else {
+                    String time = daysRestantes + " días restantes";
+
+                    timeInsured.setText(time);
+                }
             }else {
                 timeInsured.setText("");
             }
@@ -323,7 +357,7 @@ public class AdapterDeviceRecycler extends RecyclerView.Adapter {
     }
 
     //--------Metodo para eliminar recetas con el Swipe----------------------------------------//
-    public void eliminarReceta (int posicion){
+    public void eliminarEquipo(int posicion){
         mDatabase = FirebaseDatabase.getInstance();
         mReference = mDatabase.getReference();
         final DatabaseReference deviceDb = mReference.child(MainActivity.showId()).child(context.getResources().getString(R.string.device_reference_child)).child(deviceList.get(posicion).getId());
@@ -333,7 +367,7 @@ public class AdapterDeviceRecycler extends RecyclerView.Adapter {
     }
 
     //--------Metodo para volver a agregar la receta que se elimino------------------------------//
-    public void noRemoverReceta (Device device, int posicion){
+    public void noRemoverEquipo(Device device, int posicion){
         deviceList.add(posicion,device);
         notifyItemInserted(posicion);
     }

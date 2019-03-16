@@ -11,6 +11,7 @@ public class Device {
     private String name;
     private String make;
     private String model;
+    private String imei;
     private List<String> photoList;
     private Boolean insured;
     private Boolean finalVerification;
@@ -22,7 +23,7 @@ public class Device {
     }
 
     public Device(String id, String typeDevice, String name, String make, String model,
-                  String salesDate, List<String> photoList, Boolean insured, Boolean finalVerification,String insuranceDate) {
+                  String salesDate, List<String> photoList, Boolean insured, Boolean finalVerification,String insuranceDate,String imei) {
         this.id = id;
         this.typeDevice = typeDevice;
         this.name = name;
@@ -33,9 +34,14 @@ public class Device {
         this.insured = insured;
         this.finalVerification = finalVerification;
         this.insuranceDate = insuranceDate;
+        this.imei = imei;
     }
 
     //getter
+
+    public String getImei() {
+        return imei;
+    }
 
     public String getInsuranceDate() {
         return insuranceDate;

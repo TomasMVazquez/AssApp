@@ -43,8 +43,12 @@ import com.example.toms.assapp.model.Device;
 import com.example.toms.assapp.util.ResultListener;
 import com.example.toms.assapp.view.fragments.MyInsuranceFragment;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -143,12 +147,9 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
                 if (checkInfo()) {
                     Device newDevice = new Device("", deviceType, addName.getText().toString(),
                             addMake.getText().toString(), addModel.getText().toString(), "",
-                            photoList, false,false,"");
-                    addDeviceToDataBase(newDevice);
+                            photoList, false,false,"",imeiCel.getText().toString());
 
-                    Intent data = MyInsuranceFragment.dataBaseId(idReferenceGuest);
-                    setResult(Activity.RESULT_OK, data);
-                    finish();
+                    checkImei(newDevice);
                 }
             }
         });
@@ -180,6 +181,7 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
     }
 
     //Spinner to select the type
+    @SuppressLint("HardwareIds")
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (position != 0) {
@@ -208,15 +210,15 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
                         ActivityCompat.requestPermissions(this,
                                 new String[]{Manifest.permission.READ_PHONE_STATE},
                                 MY_PERMISSIONS_REQUEST_READ_PHONE_STATE);
-                        return;
                     } else {
                         imeiCel.setText(telephonyManager.getImei());
                     }
                 }else {
                     imeiCel.setText(telephonyManager.getDeviceId());
                 }
+
             }else {
-                imeiCel.setText("");
+                imeiCel.setText("0");
                 addMake.setText("");
                 addModel.setText("");
                 imeiCel.setVisibility(View.GONE);
@@ -229,9 +231,50 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
         Toast.makeText(this, "Debes seleccionar el tipo de dispositivo", Toast.LENGTH_SHORT).show();
     }
 
-
-
     //Add to Database Firebase
+    //check if IMEI already exists
+    public void checkImei(final Device device){
+        DatabaseReference devices;
+        if (idReferenceGuest!=null){
+            devices = mReference.child(idReferenceGuest).child(getResources().getString(R.string.device_reference_child));
+            devices.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    Boolean check = false;
+                    for (DataSnapshot childSnapShot : dataSnapshot.getChildren()){
+                        Device checkDevice = childSnapShot.getValue(Device.class);
+                        if (checkDevice.getImei().equals(device.getImei())){
+                            check = true;
+                        }
+                    }
+                    if (check){
+                        Toast.makeText(AddNewDevice.this, "Este equipo ya esta en su lista", Toast.LENGTH_SHORT).show();
+                        Intent data = MyInsuranceFragment.dataBaseId(idReferenceGuest);
+                        setResult(Activity.RESULT_CANCELED, data);
+                        finish();
+                    }else {
+                        addDeviceToDataBase(device);
+                        Intent data = MyInsuranceFragment.dataBaseId(idReferenceGuest);
+                        setResult(Activity.RESULT_OK, data);
+                        finish();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+        }else {
+            addDeviceToDataBase(device);
+            Intent data = MyInsuranceFragment.dataBaseId(idReferenceGuest);
+            setResult(Activity.RESULT_OK, data);
+            finish();
+        }
+
+    }
+
     public void addDeviceToDataBase(Device device){
         DatabaseReference idDevices;
         if (idReferenceGuest==null){
@@ -245,14 +288,14 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
         device.setId(idDataBase);
 
         idDevices.setValue(new Device(device.getId(),device.getTypeDevice(),device.getName(),device.getMake(),device.getModel()
-                ,device.getSalesDate(),device.getPhotoList(),device.getInsured(),device.getFinalVerification(),device.getInsuranceDate()));
+                ,device.getSalesDate(),device.getPhotoList(),device.getInsured(),device.getFinalVerification(),device.getInsuranceDate(),device.getImei()));
     }
 
     //Permiso para sacar IMEI
     @TargetApi(Build.VERSION_CODES.O)
     @SuppressLint({"MissingPermission", "NewApi"})
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults){
+                                           @NonNull String permissions[], @NonNull int[] grantResults){
 
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_READ_PHONE_STATE:
@@ -265,8 +308,11 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                     Toast.makeText(this, "Necesitamos tu permiso para tomar el IMEI de tu equipo", Toast.LENGTH_SHORT).show();
+                    spinnerSelectTypeDevice.setSelection(0);
+                    addMake.setText("");
+                    addModel.setText("");
+                    imeiCel.setVisibility(View.GONE);
                 }
-                return;
         }
 
     }

@@ -115,7 +115,7 @@ public class LogInActivity extends AppCompatActivity {
         //Progess dialog
         final ProgressDialog prog= new ProgressDialog(LogInActivity.this);
         prog.setTitle("Por favor espere");
-        prog.setMessage("Estamos cargando su imagen");
+        prog.setMessage("Estamos cargando su perfil");
         prog.setCancelable(false);
         prog.setIndeterminate(true);
         prog.setProgressStyle(ProgressDialog.STYLE_SPINNER);

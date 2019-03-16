@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.toms.assapp.R;
+import com.example.toms.assapp.model.Device;
 import com.example.toms.assapp.util.Util;
 import com.example.toms.assapp.view.fragments.MyInsuranceFragment;
 import com.facebook.login.LoginManager;
@@ -35,6 +36,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.rohitss.uceh.UCEHandler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -66,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        new UCEHandler.Builder(this).build();
+
         mAuth = FirebaseAuth.getInstance();
         //firebase
         mDatabase = FirebaseDatabase.getInstance();
@@ -96,8 +100,10 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
                         goLogIn();
                         return true;
                     case R.id.misSeguros:
+                        Toast.makeText(MainActivity.this, "En construccion", Toast.LENGTH_SHORT).show();
                         return true;
                     case R.id.aboutUs:
+                        Toast.makeText(MainActivity.this, "En construccion", Toast.LENGTH_SHORT).show();
                         return true;
                 }
                 return false;
@@ -220,6 +226,7 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
 
             if (idDataBase != null && !idDataBase.equals(dataBaseName)){
                 updateGuestDataBase(dataBaseName);
+
             } else {
                 idDataBase = dataBaseName;
             }
@@ -293,6 +300,39 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
             }
         });
 
+    }
+
+    //Revisar dias de cada equipo en la base de datos
+    public void checkDaysDevices(final String dataBase){
+        mReference.child(dataBase).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Device device = (Device) dataSnapshot.getValue();
+                if (device.getInsured()){
+
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     //Al salir de la app destruir la base de datos del guest

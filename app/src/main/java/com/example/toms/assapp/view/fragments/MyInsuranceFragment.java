@@ -27,8 +27,6 @@ import com.example.toms.assapp.view.FinalVerification;
 import com.example.toms.assapp.view.LogInActivity;
 import com.example.toms.assapp.view.MainActivity;
 import com.example.toms.assapp.view.adpater.AdapterDeviceRecycler;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,13 +102,13 @@ public class MyInsuranceFragment extends Fragment implements AdapterDeviceRecycl
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                       adapterDeviceRecycler.eliminarReceta(position);
+                       adapterDeviceRecycler.eliminarEquipo(position);
                     }
                 });
                 builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        adapterDeviceRecycler.noRemoverReceta(device,position);
+                        adapterDeviceRecycler.noRemoverEquipo(device,position);
                     }
                 });
 
