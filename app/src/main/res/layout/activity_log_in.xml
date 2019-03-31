@@ -11,7 +11,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/assurant_logo_rgb"
+        android:src="@drawable/assurant_logo_rgb_2"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
         />

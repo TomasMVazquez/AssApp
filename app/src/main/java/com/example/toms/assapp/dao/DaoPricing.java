@@ -13,25 +13,25 @@ public class DaoPricing {
                 resultListener.finish(25.5);
                 break;
             case "TV/LCD/SMART":
-                resultListener.finish(35.5);
+                resultListener.finish(33.3);
                 break;
             case "Consola":
-                resultListener.finish(45.5);
+                resultListener.finish(10.0);
                 break;
             case "Monitor PC":
-                resultListener.finish(55.5);
+                resultListener.finish(5.0);
                 break;
             case "Notebook":
-                resultListener.finish(65.5);
+                resultListener.finish(15.8);
                 break;
             case "Tablet":
-                resultListener.finish(75.5);
+                resultListener.finish(2.5);
                 break;
             case "Bicicleta":
-                resultListener.finish(85.5);
+                resultListener.finish(15.5);
                 break;
             case "Equipo de audio":
-                resultListener.finish(95.5);
+                resultListener.finish(5.5);
                 break;
 
         }

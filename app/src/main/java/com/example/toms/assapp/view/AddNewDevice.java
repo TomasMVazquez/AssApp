@@ -63,7 +63,7 @@ import java.util.List;
 
 import pl.aprilapps.easyphotopicker.EasyImage;
 
-public class AddNewDevice extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class AddNewDevice extends AppCompatActivity implements AdapterView.OnItemSelectedListener, ActivityCompat.OnRequestPermissionsResultCallback {
 
     public static final String KEY_ID_DB = "db";
     public static final int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 500;
@@ -149,7 +149,14 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
                             addMake.getText().toString(), addModel.getText().toString(), "",
                             photoList, false,false,"",imeiCel.getText().toString());
 
-                    checkImei(newDevice);
+                    if (newDevice.getTypeDevice().equals("Celular")) {
+                        checkImei(newDevice);
+                    }else{
+                        addDeviceToDataBase(newDevice);
+                        Intent data = MyInsuranceFragment.dataBaseId(idReferenceGuest);
+                        setResult(Activity.RESULT_OK, data);
+                        finish();
+                    }
                 }
             }
         });
@@ -181,7 +188,6 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
     }
 
     //Spinner to select the type
-    @SuppressLint("HardwareIds")
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (position != 0) {
@@ -191,7 +197,7 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
             controllerPricing.givePricing(deviceType, new ResultListener<Double>() {
                 @Override
                 public void finish(Double resultado) {
-                    String price = "$ " + resultado + " /mes";
+                    String price = "$ " + resultado + " /día";
                     insurancePrice.setText(price);
                 }
             });
@@ -202,18 +208,14 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
                 addModel.setText(Build.MODEL);
                 telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
                 imeiCel.setVisibility(View.VISIBLE);
-                int permissionCheck = ContextCompat.checkSelfPermission(this,
+                int permissionCheck = ContextCompat.checkSelfPermission(AddNewDevice.this,
                         Manifest.permission.READ_PHONE_STATE);
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(this,
-                                new String[]{Manifest.permission.READ_PHONE_STATE},
-                                MY_PERMISSIONS_REQUEST_READ_PHONE_STATE);
-                    } else {
-                        imeiCel.setText(telephonyManager.getImei());
-                    }
-                }else {
+                if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.READ_PHONE_STATE},
+                            MY_PERMISSIONS_REQUEST_READ_PHONE_STATE);
+                } else {
                     imeiCel.setText(telephonyManager.getDeviceId());
                 }
 
@@ -235,24 +237,25 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
     //check if IMEI already exists
     public void checkImei(final Device device){
         DatabaseReference devices;
-        if (idReferenceGuest!=null){
+
+        if (idReferenceGuest != null) {
             devices = mReference.child(idReferenceGuest).child(getResources().getString(R.string.device_reference_child));
             devices.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     Boolean check = false;
-                    for (DataSnapshot childSnapShot : dataSnapshot.getChildren()){
+                    for (DataSnapshot childSnapShot : dataSnapshot.getChildren()) {
                         Device checkDevice = childSnapShot.getValue(Device.class);
-                        if (checkDevice.getImei().equals(device.getImei())){
+                        if (checkDevice.getImei().equals(device.getImei())) {
                             check = true;
                         }
                     }
-                    if (check){
+                    if (check) {
                         Toast.makeText(AddNewDevice.this, "Este equipo ya esta en su lista", Toast.LENGTH_SHORT).show();
                         Intent data = MyInsuranceFragment.dataBaseId(idReferenceGuest);
                         setResult(Activity.RESULT_CANCELED, data);
                         finish();
-                    }else {
+                    } else {
                         addDeviceToDataBase(device);
                         Intent data = MyInsuranceFragment.dataBaseId(idReferenceGuest);
                         setResult(Activity.RESULT_OK, data);
@@ -266,13 +269,12 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
                 }
             });
 
-        }else {
+        } else {
             addDeviceToDataBase(device);
             Intent data = MyInsuranceFragment.dataBaseId(idReferenceGuest);
             setResult(Activity.RESULT_OK, data);
             finish();
         }
-
     }
 
     public void addDeviceToDataBase(Device device){
@@ -292,7 +294,6 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
     }
 
     //Permiso para sacar IMEI
-    @TargetApi(Build.VERSION_CODES.O)
     @SuppressLint({"MissingPermission", "NewApi"})
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String permissions[], @NonNull int[] grantResults){
@@ -313,6 +314,7 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
                     addModel.setText("");
                     imeiCel.setVisibility(View.GONE);
                 }
+                break;
         }
 
     }

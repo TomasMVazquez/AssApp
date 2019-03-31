@@ -108,7 +108,7 @@ public class DeviceDetailFragment extends Fragment {
                         controllerPricing.givePricing(newDevice.getTypeDevice(), new ResultListener<Double>() {
                             @Override
                             public void finish(Double resultado) {
-                                String pricing = "$ " + resultado.toString() + " /mes";
+                                String pricing = "$ " + resultado.toString() + " /día";
                                 tvDetailPrice.setText(pricing);
                             }
                         });

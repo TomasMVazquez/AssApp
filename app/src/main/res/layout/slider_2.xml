@@ -42,13 +42,9 @@
     <ImageView
         android:id="@+id/ivSlide2"
         android:layout_width="match_parent"
-        android:layout_height="360dp"
+        android:layout_height="376dp"
         android:scaleType="fitXY"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="28dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         android:src="@drawable/carrusel2"
         android:contentDescription="@string/slide_2" />

@@ -278,7 +278,7 @@ public class AdapterDeviceRecycler extends RecyclerView.Adapter {
                     final DatabaseReference idinsuranceDate = mReference.child(MainActivity.showId()).child(context.getResources().getString(R.string.device_reference_child)).child(device.getId()).child("insuranceDate");
                     idDeviceInsured.setValue(false);
                     idinsuranceDate.setValue("");
-                    Toast.makeText(context, "El seguro de su " + device.getName() + " ah cumplido los 30 días y se ah desactivado la protección", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "El seguro de su " + device.getName() + " ah cumplido los días y se ah desactivado la protección", Toast.LENGTH_LONG).show();
                 }
             }else {
                 switchInsurance.setChecked(false);
@@ -292,7 +292,7 @@ public class AdapterDeviceRecycler extends RecyclerView.Adapter {
             controllerPricing.givePricing(device.getTypeDevice(), new ResultListener<Double>() {
                 @Override
                 public void finish(Double resultado) {
-                    String precio = "$ " + resultado.toString() + " /mes";
+                    String precio = "$ " + resultado.toString() + " /día";
                     premmium.setText(precio);
                 }
             });
