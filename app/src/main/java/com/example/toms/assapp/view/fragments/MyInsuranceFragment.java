@@ -7,7 +7,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -141,19 +143,19 @@ public class MyInsuranceFragment extends Fragment implements AdapterDeviceRecycl
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        OnFragmentNotify onFragmentFormNotify = (OnFragmentNotify) getContext();
+
         if (resultCode == Activity.RESULT_OK){
             switch (requestCode){
                 case KEY_ADD_DEVICE:
                     Bundle bundle = data.getExtras();
                     idDataBase = bundle.getString(KEY_ID_DB);
                     if (idDataBase != null){
-                        OnFragmentNotify onFragmentFormNotify= (OnFragmentNotify) getContext();
                         onFragmentFormNotify.showIdGuest(idDataBase);
                     }
                     break;
                 case KEY_LOGIN:
                     Toast.makeText(getContext(), "Login exitoso", Toast.LENGTH_SHORT).show();
-
                     break;
                 case KEY_FINAL_VERIF:
                     Toast.makeText(getContext(), "Verificacion Final exitoso", Toast.LENGTH_SHORT).show();
@@ -197,8 +199,15 @@ public class MyInsuranceFragment extends Fragment implements AdapterDeviceRecycl
         startActivityForResult(intent, KEY_FINAL_VERIF);
     }
 
+    @Override
+    public void cargarDiasAdapter(String id) {
+        OnFragmentNotify onFragmentFormNotify = (OnFragmentNotify) getContext();
+        onFragmentFormNotify.cargarDias(id);
+    }
+
     public interface OnFragmentNotify {
         public void showIdGuest(String id);
+        public void cargarDias(String id);
     }
 
 }

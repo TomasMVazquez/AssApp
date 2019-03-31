@@ -46,35 +46,7 @@ public class DaoFirebaseDataBase {
 
             }
         });
-//        mReference.child(idDataBase).child(context.getResources().getString(R.string.device_reference_child)).addChildEventListener(new ChildEventListener() {
-//            @Override
-//            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-//                Device device = dataSnapshot.getValue(Device.class);
-//                deviceList.add(device);
-//                listenerController.finish(deviceList);
-//            }
-//
-//            @Override
-//            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-//
-//            }
-//
-//            @Override
-//            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-//
-//            }
-//
-//            @Override
-//            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//
+
     }
 
 

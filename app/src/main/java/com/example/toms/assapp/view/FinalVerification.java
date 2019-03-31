@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -35,6 +36,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.toms.assapp.R;
 import com.example.toms.assapp.model.Device;
+import com.example.toms.assapp.view.fragments.DaysToInsureFragment;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -59,7 +61,7 @@ import java.util.concurrent.TimeUnit;
 
 import pl.aprilapps.easyphotopicker.EasyImage;
 
-public class FinalVerification extends AppCompatActivity {
+public class FinalVerification extends AppCompatActivity implements DaysToInsureFragment.FragmentInterface{
 
     public static final String KEY_ID_DEVICE_DB = "db";
 
@@ -71,6 +73,12 @@ public class FinalVerification extends AppCompatActivity {
     private String id;
     private FirebaseDatabase mDatabase;
     private DatabaseReference mReference;
+    private DatabaseReference deviceDb;
+    private DatabaseReference idDeviceInsured;
+    private DatabaseReference idinsuranceDate;
+    private DatabaseReference idDaysToInsure;
+    private DatabaseReference idVerif;
+
     private Boolean statusVerificationDB = false;
     private FirebaseStorage mStorage;
     private List<String> photoList = new ArrayList<>();
@@ -213,13 +221,14 @@ public class FinalVerification extends AppCompatActivity {
                             SimpleDateFormat d = new SimpleDateFormat("dd");
                             SimpleDateFormat m = new SimpleDateFormat("MM");
                             Date today = new Date();
-                            String year = String.valueOf(Integer.valueOf(y.format(today))-1);
+                            String year = String.valueOf(Integer.valueOf(y.format(today)));
                             String day = d.format(today);
                             String month = m.format(today);
                             String insuranceDate = (day + "/" + month + "/" + year);
                             modifyDevice.setInsuranceDate(insuranceDate);
                             device.setValue(modifyDevice);
-                            continueActivity();
+
+                            confirmDays(id);
                         }
 
                         @Override
@@ -232,6 +241,16 @@ public class FinalVerification extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void confirmDays(String id){
+        Bundle bundle = new Bundle();
+        bundle.putString(DaysToInsureFragment.KEY_ID,id);
+        DaysToInsureFragment daysToInsureFragment = new DaysToInsureFragment();
+        daysToInsureFragment.setArguments(bundle);
+        daysToInsureFragment.setCancelable(false);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        daysToInsureFragment.show(fragmentManager,"days");
     }
 
     @Override
@@ -276,10 +295,10 @@ public class FinalVerification extends AppCompatActivity {
             return false;
         }
 
-        if (photoList.size() < 4) {
-            Toast.makeText(this, getResources().getString(R.string.error_not_photo), Toast.LENGTH_SHORT).show();
-            return false;
-        }
+//        if (photoList.size() < 4) {
+//            Toast.makeText(this, getResources().getString(R.string.error_not_photo), Toast.LENGTH_SHORT).show();
+//            return false;
+//        }
         return true;
     }
 
@@ -435,6 +454,53 @@ public class FinalVerification extends AppCompatActivity {
 
             }
         }, milisegundos);
+    }
+
+    @Override
+    public void confirmDays(String id, Integer days) {
+        if (days>0){
+            confirmInsurance(id,days);
+            continueActivity();
+        }else {
+            cancelInsurance(id);
+            Toast.makeText(getApplicationContext(), "Su seguro NO se activó", Toast.LENGTH_SHORT).show();
+            setResult(Activity.RESULT_CANCELED);
+            finish();
+        }
+        this.recreate();
+    }
+
+    public void cancelInsurance(String idDevice){
+        deviceDb = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice);
+        idDeviceInsured = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice).child("insured");
+        idinsuranceDate = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice).child("insuranceDate");
+        idDaysToInsure = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice).child("daysToInsure");
+        idDeviceInsured.setValue(false);
+        idinsuranceDate.setValue("");
+        idDaysToInsure.setValue(0);
+    }
+
+    public void confirmInsurance(String idDevice,Integer days){
+        deviceDb = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice);
+        idDeviceInsured = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice).child("insured");
+        idinsuranceDate = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice).child("insuranceDate");
+        idDaysToInsure = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice).child("daysToInsure");
+
+        idinsuranceDate.setValue(insureDay());
+        idDaysToInsure.setValue(days);
+        idDeviceInsured.setValue(true);
+    }
+
+    public String insureDay(){
+        SimpleDateFormat y = new SimpleDateFormat("yyyy");
+        SimpleDateFormat d = new SimpleDateFormat("dd");
+        SimpleDateFormat m = new SimpleDateFormat("MM");
+        Date today = new Date();
+        String year = String.valueOf(Integer.valueOf(y.format(today)));
+        String day = d.format(today);
+        String month = m.format(today);
+        String insuranceDate = (day + "/" + month + "/" + year);
+        return insuranceDate;
     }
 
     //Date Picker Comands - for purchase date

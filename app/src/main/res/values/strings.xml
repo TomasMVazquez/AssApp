@@ -73,4 +73,7 @@
     <string name="text_download">Baja tu poliza de seguro:</string>
     <string name="link"><a href="https://ar.assurantcustomerportal.com/">Click aquí para bajar mi póliza</a></string>
 
+    //DaysToInsure
+    <string name="days_insure">¿Cuantos días quiere asegurar su equipo?</string>
+
 </resources>

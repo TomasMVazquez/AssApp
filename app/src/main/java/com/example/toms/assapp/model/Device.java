@@ -16,6 +16,7 @@ public class Device {
     private Boolean insured;
     private Boolean finalVerification;
     private String insuranceDate;
+    private Integer daysToInsure;
 
     //consturctores
 
@@ -23,7 +24,8 @@ public class Device {
     }
 
     public Device(String id, String typeDevice, String name, String make, String model,
-                  String salesDate, List<String> photoList, Boolean insured, Boolean finalVerification,String insuranceDate,String imei) {
+                  String salesDate, List<String> photoList, Boolean insured, Boolean finalVerification,
+                  String insuranceDate,String imei, Integer daysToInsure) {
         this.id = id;
         this.typeDevice = typeDevice;
         this.name = name;
@@ -35,9 +37,14 @@ public class Device {
         this.finalVerification = finalVerification;
         this.insuranceDate = insuranceDate;
         this.imei = imei;
+        this.daysToInsure = daysToInsure;
     }
 
     //getter
+
+    public Integer getDaysToInsure() {
+        return daysToInsure;
+    }
 
     public String getImei() {
         return imei;
@@ -84,6 +91,10 @@ public class Device {
     }
 
     //setter
+
+    public void setDaysToInsure(Integer daysToInsure) {
+        this.daysToInsure = daysToInsure;
+    }
 
     public void setInsuranceDate(String insuranceDate) {
         this.insuranceDate = insuranceDate;

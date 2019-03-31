@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -19,11 +20,13 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.toms.assapp.R;
 import com.example.toms.assapp.model.Device;
 import com.example.toms.assapp.util.Util;
+import com.example.toms.assapp.view.fragments.DaysToInsureFragment;
 import com.example.toms.assapp.view.fragments.MyInsuranceFragment;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,10 +41,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.rohitss.uceh.UCEHandler;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements MyInsuranceFragment.OnFragmentNotify {
+public class MainActivity extends AppCompatActivity implements MyInsuranceFragment.OnFragmentNotify, DaysToInsureFragment.FragmentInterface {
 
     public static final int KEY_LOGIN=101;
     public static final String KEY_NAME = "name";
@@ -53,6 +58,11 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
     private static FirebaseUser currentUser;
     private FirebaseDatabase mDatabase;
     private DatabaseReference mReference;
+    private DatabaseReference deviceDb;
+    private DatabaseReference idDeviceInsured;
+    private DatabaseReference idinsuranceDate;
+    private DatabaseReference idDaysToInsure;
+    private DatabaseReference idVerif;
 
     private static String idDataBase;
 
@@ -302,39 +312,6 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
 
     }
 
-    //Revisar dias de cada equipo en la base de datos
-    public void checkDaysDevices(final String dataBase){
-        mReference.child(dataBase).addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Device device = (Device) dataSnapshot.getValue();
-                if (device.getInsured()){
-
-                }
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
     //Al salir de la app destruir la base de datos del guest
     @Override
     protected void onDestroy() {
@@ -362,9 +339,64 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
         idDataBase = id;
     }
 
+    @Override
+    public void cargarDias(String id) {
+        Bundle bundle = new Bundle();
+        bundle.putString(DaysToInsureFragment.KEY_ID,id);
+        DaysToInsureFragment daysToInsureFragment = new DaysToInsureFragment();
+        daysToInsureFragment.setArguments(bundle);
+        daysToInsureFragment.setCancelable(false);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        daysToInsureFragment.show(fragmentManager,"days");
+    }
+
 
     public static String showId(){
         return idDataBase;
+    }
+
+    @Override
+    public void confirmDays(String id, Integer days) {
+            if (days>0){
+                confirmInsurance(id,days);
+            }else {
+                cancelInsurance(id);
+                Toast.makeText(getApplicationContext(), "Su seguro NO se activó", Toast.LENGTH_SHORT).show();
+            }
+        this.recreate();
+    }
+
+    public void cancelInsurance(String idDevice){
+        deviceDb = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice);
+        idDeviceInsured = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice).child("insured");
+        idinsuranceDate = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice).child("insuranceDate");
+        idDaysToInsure = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice).child("daysToInsure");
+        idDeviceInsured.setValue(false);
+        idinsuranceDate.setValue("");
+        idDaysToInsure.setValue(0);
+    }
+
+    public void confirmInsurance(String idDevice,Integer days){
+        deviceDb = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice);
+        idDeviceInsured = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice).child("insured");
+        idinsuranceDate = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice).child("insuranceDate");
+        idDaysToInsure = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice).child("daysToInsure");
+
+        idinsuranceDate.setValue(insureDay());
+        idDaysToInsure.setValue(days);
+        idDeviceInsured.setValue(true);
+    }
+
+    public String insureDay(){
+        SimpleDateFormat y = new SimpleDateFormat("yyyy");
+        SimpleDateFormat d = new SimpleDateFormat("dd");
+        SimpleDateFormat m = new SimpleDateFormat("MM");
+        Date today = new Date();
+        String year = String.valueOf(Integer.valueOf(y.format(today)));
+        String day = d.format(today);
+        String month = m.format(today);
+        String insuranceDate = (day + "/" + month + "/" + year);
+        return insuranceDate;
     }
 }
 
