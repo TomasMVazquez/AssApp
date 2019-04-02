@@ -53,6 +53,9 @@
     //LogIn
     <string name="welcome_login">Bienvenidos a Assurant APP</string>
     <string name="choose_login">Elige como ingresar:</string>
+    <string name="email_login">Ingrese su Email</string>
+    <string name="pass_login">Ingrese su Contraseña</string>
+    <string name="or">También puedes ingresar con:</string>
     //Facebook
     <string name="facebook_app_id">292033288323458</string>
     <string name="fb_login_protocol_scheme">fb292033288323458</string>

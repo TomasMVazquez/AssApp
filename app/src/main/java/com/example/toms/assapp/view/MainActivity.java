@@ -203,7 +203,6 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
                 case KEY_LOGIN:
                     Bundle bundle = data.getExtras();
                     String name = bundle.getString(KEY_NAME);
-                    Toast.makeText(this, name, Toast.LENGTH_SHORT).show();
                     break;
             }
             updateUI(currentUser);

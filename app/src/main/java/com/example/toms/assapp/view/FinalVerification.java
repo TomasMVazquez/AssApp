@@ -295,10 +295,10 @@ public class FinalVerification extends AppCompatActivity implements DaysToInsure
             return false;
         }
 
-//        if (photoList.size() < 4) {
-//            Toast.makeText(this, getResources().getString(R.string.error_not_photo), Toast.LENGTH_SHORT).show();
-//            return false;
-//        }
+        if (photoList.size() < 4) {
+            Toast.makeText(this, getResources().getString(R.string.error_not_photo), Toast.LENGTH_SHORT).show();
+            return false;
+        }
         return true;
     }
 
