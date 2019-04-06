@@ -10,10 +10,10 @@ public class DaoPricing {
         switch (deviceType){
 
             case "Celular":
-                resultListener.finish(25.5);
+                resultListener.finish(12.5);
                 break;
             case "TV/LCD/SMART":
-                resultListener.finish(33.3);
+                resultListener.finish(15.3);
                 break;
             case "Consola":
                 resultListener.finish(10.0);
@@ -28,7 +28,7 @@ public class DaoPricing {
                 resultListener.finish(2.5);
                 break;
             case "Bicicleta":
-                resultListener.finish(15.5);
+                resultListener.finish(5.5);
                 break;
             case "Equipo de audio":
                 resultListener.finish(5.5);

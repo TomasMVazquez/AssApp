@@ -82,17 +82,17 @@ public class LogInActivity extends AppCompatActivity {
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-        // Build a GoogleSignInClient with the options specified by gso.
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+            // Build a GoogleSignInClient with the options specified by gso.
+            mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        SignInButton btnGoogleSignIn = findViewById(R.id.btnGoogleSignIn);
-        btnGoogleSignIn.setSize(SignInButton.SIZE_STANDARD);
-        btnGoogleSignIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signIn();
-            }
-        });
+            SignInButton btnGoogleSignIn = findViewById(R.id.btnGoogleSignIn);
+            btnGoogleSignIn.setSize(SignInButton.SIZE_STANDARD);
+            btnGoogleSignIn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    signIn();
+                }
+            });
 
         //Facebook
         final LoginButton loginButton = findViewById(R.id.login_button_facebook);
