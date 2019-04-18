@@ -280,6 +280,7 @@ public class AdapterDeviceRecycler extends RecyclerView.Adapter {
             String insuranceDate = device.getInsuranceDate();
             Integer daysToInsure = device.getDaysToInsure();
 
+            //TODO Revisar si es horas o dias
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
             Date myDate = null;
             try {
@@ -292,13 +293,13 @@ public class AdapterDeviceRecycler extends RecyclerView.Adapter {
 
             long timeDiff = today.getTime() - myDate.getTime();
             TimeUnit unit = TimeUnit.DAYS;
-            long diference = unit.convert(timeDiff,TimeUnit.MILLISECONDS);
+            long diference = unit.convert(timeDiff, TimeUnit.MILLISECONDS);
             long daysRestantes = daysToInsure - diference;
 
-            if (daysRestantes <= 0){
+            if (daysRestantes <= 0) {
                 cancelInsurance(device.getId());
                 Toast.makeText(context, "Se acabó el tiempo del seguro para su equipo " + device.getName(), Toast.LENGTH_SHORT).show();
-            }else {
+            } else {
                 switchInsurance.setChecked(true);
                 shield.setVisibility(View.VISIBLE);
                 String time = daysRestantes + " días restantes";

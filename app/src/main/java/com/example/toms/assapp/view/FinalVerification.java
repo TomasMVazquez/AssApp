@@ -38,6 +38,7 @@ import com.example.toms.assapp.R;
 import com.example.toms.assapp.model.Device;
 import com.example.toms.assapp.view.fragments.DaysToInsureFragment;
 import com.example.toms.assapp.view.fragments.FragmentDialog;
+import com.example.toms.assapp.view.fragments.HoursToInsureFragment;
 import com.example.toms.assapp.view.fragments.MonthToInsureFragment;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -64,7 +65,8 @@ import java.util.concurrent.TimeUnit;
 import pl.aprilapps.easyphotopicker.EasyImage;
 
 public class FinalVerification extends AppCompatActivity implements DaysToInsureFragment.FragmentInterface, DaysToInsureFragment.InterfaceClose,
-        MonthToInsureFragment.FragmentInterfaceMonth, MonthToInsureFragment.InterfaceCloseMonth{
+        MonthToInsureFragment.FragmentInterfaceMonth, MonthToInsureFragment.InterfaceCloseMonth,
+        HoursToInsureFragment.FragmentInterfaceHour, HoursToInsureFragment.InterfaceCloseHour{
 
     public static final String KEY_ID_DEVICE_DB = "db";
 

@@ -78,10 +78,10 @@
     <string name="link"><a href="https://ar.assurantcustomerportal.com/">Click aquí para bajar mi póliza</a></string>
 
     //DaysToInsure
+    <string name="hours_insure">¿Cuantas horas quiere asegurar su equipo?</string>
     <string name="days_insure">¿Cuantos días quiere asegurar su equipo?</string>
     <string name="month_insure">¿Cuantos meses quiere asegurar su equipo?</string>
     <string name="contratar">contratar</string>
     <string name="cancelar">cancelar</string>
-
 
 </resources>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".view.fragments.HoursToInsureFragment"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:theme="@style/dialogTheme">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="15dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginEnd="15dp"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:text="@string/device_price_title"
+            android:textColor="@color/colorPrimary"
+            />
+
+        <TextView
+            android:id="@+id/insurancePriceHours"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:layout_marginEnd="15dp"
+            android:textSize="18sp"
+            tools:text="$ 50.5 /hour"
+            android:textColor="@color/colorPrimary"
+            />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/hours_insure"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:textColor="@color/colorBlack"
+        />
+
+    <TextView
+        android:id="@+id/crollerHoursChooser"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        tools:text="2"
+        android:textSize="20sp"
+        android:textColor="@color/colorPrimaryDark"
+        />
+
+    <com.sdsmdg.harjot.crollerTest.Croller
+        android:id="@+id/crollerHours"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        app:label=""
+        app:back_circle_color="@color/colorGreyLight"
+        app:indicator_color="@color/colorGrey"
+        app:indicator_width="10"
+        app:is_continuous="false"
+        app:label_color="@color/transparencia"
+        app:main_circle_color="@color/colorWhite"
+        app:max="24"
+        app:min="3"
+        app:progress_primary_color="@color/colorAccentGreen"
+        app:progress_secondary_color="@color/colorAccentOrange"
+        app:progress_primary_circle_size="10"
+        app:progress_secondary_circle_size="5"
+        app:start_offset="45" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="2dp"
+        >
+        <Button
+            android:id="@+id/btnCancelHour"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="50"
+            android:layout_marginEnd="5dp"
+            android:background="@color/colorGrey"
+            android:text="@string/cancelar"
+            android:textColor="@color/colorWhite"
+            android:textSize="18sp"
+            />
+        <Button
+            android:id="@+id/btnHour"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="50"
+            android:background="@color/colorAccentGreen"
+            android:text="@string/contratar"
+            android:textColor="@color/colorWhite"
+            android:textSize="18sp"
+            />
+    </LinearLayout>
+
+</LinearLayout>

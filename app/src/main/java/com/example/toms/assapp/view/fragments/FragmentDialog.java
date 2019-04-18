@@ -104,6 +104,7 @@ public class FragmentDialog extends DialogFragment implements DaysToInsureFragme
                         // Set up the ViewPager with the sections adapter.
                         ViewPager viewPager = (ViewPager) view.findViewById(R.id.pager);
                         viewPager.setAdapter(sectionsPagerAdapter);
+                        viewPager.setCurrentItem(1);
                     }
                 });
             }
@@ -132,11 +133,17 @@ public class FragmentDialog extends DialogFragment implements DaysToInsureFragme
 
             if (position == 0){
                 // find first fragment...
+                HoursToInsureFragment hoursToInsureFragment = new HoursToInsureFragment();
+                hoursToInsureFragment.setArguments(bundle);
+                return hoursToInsureFragment;
+            }
+            if (position == 1){
+                // find first fragment...
                 DaysToInsureFragment daysToInsureFragment = new DaysToInsureFragment();
                 daysToInsureFragment.setArguments(bundle);
                 return daysToInsureFragment;
             }
-            if (position == 1){
+            if (position == 2){
                 // find first fragment...
                 MonthToInsureFragment monthToInsureFragment = new MonthToInsureFragment();
                 monthToInsureFragment.setArguments(bundle);
@@ -148,15 +155,17 @@ public class FragmentDialog extends DialogFragment implements DaysToInsureFragme
         @Override
         public int getCount() {
             // Show 2 total pages.
-            return 2;
+            return 3;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "On Demand";
+                    return "On Demand Hours";
                 case 1:
+                    return "On Demand Days";
+                case 2:
                     return "Mensual";
             }
             return null;

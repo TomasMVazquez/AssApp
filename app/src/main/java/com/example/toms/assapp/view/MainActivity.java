@@ -28,6 +28,7 @@ import com.example.toms.assapp.model.Device;
 import com.example.toms.assapp.util.Util;
 import com.example.toms.assapp.view.fragments.DaysToInsureFragment;
 import com.example.toms.assapp.view.fragments.FragmentDialog;
+import com.example.toms.assapp.view.fragments.HoursToInsureFragment;
 import com.example.toms.assapp.view.fragments.MonthToInsureFragment;
 import com.example.toms.assapp.view.fragments.MyInsuranceFragment;
 import com.facebook.login.LoginManager;
@@ -49,7 +50,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements MyInsuranceFragment.OnFragmentNotify, DaysToInsureFragment.FragmentInterface, DaysToInsureFragment.InterfaceClose,
-        MonthToInsureFragment.FragmentInterfaceMonth, MonthToInsureFragment.InterfaceCloseMonth {
+        MonthToInsureFragment.FragmentInterfaceMonth, MonthToInsureFragment.InterfaceCloseMonth,
+        HoursToInsureFragment.FragmentInterfaceHour, HoursToInsureFragment.InterfaceCloseHour {
 
     public static final int KEY_LOGIN=101;
     public static final String KEY_NAME = "name";
