@@ -30,7 +30,7 @@
             android:layout_marginStart="7dp"
             android:layout_marginLeft="7dp"
             android:layout_marginTop="11dp"
-            android:text="ASSAPP"
+            android:text="@string/splash"
             android:textColor="@color/colorPrimary"
             android:textSize="60sp"
             android:textStyle="bold" />
