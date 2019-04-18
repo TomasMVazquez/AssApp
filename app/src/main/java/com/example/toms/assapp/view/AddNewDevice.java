@@ -88,6 +88,7 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
     private EditText addModel;
     private TextView imeiCel;
     private TextView insurancePrice;
+    private TextView insurancePriceMonth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +123,7 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
         addModel = findViewById(R.id.addModel);
         imeiCel = findViewById(R.id.imeiCel);
         insurancePrice = findViewById(R.id.insurancePrice);
+        insurancePriceMonth = findViewById(R.id.insurancePriceMonth);
 
         //Seleccionar los items del spinner
         ArrayList<String> spinnerArray = new ArrayList<>();
@@ -198,6 +200,9 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
                 @Override
                 public void finish(Double resultado) {
                     String price = "$ " + resultado + " /día";
+                    Double monthlyPrice = (double) Math.round((resultado * 30) * 0.8);
+                    String monthlyPrecio = "$ " + String.valueOf(monthlyPrice) + "/mes";
+                    insurancePriceMonth.setText(monthlyPrecio);
                     insurancePrice.setText(price);
                 }
             });

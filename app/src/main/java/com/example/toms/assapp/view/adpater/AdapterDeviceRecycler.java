@@ -125,6 +125,7 @@ public class AdapterDeviceRecycler extends RecyclerView.Adapter {
         private TextView idDevice;
         private TextView name;
         private TextView premmium;
+        private TextView mnthlyPremmium;
         private TextView timeInsured;
         private ImageView image;
         private ImageView shield;
@@ -141,6 +142,7 @@ public class AdapterDeviceRecycler extends RecyclerView.Adapter {
             idDevice = itemView.findViewById(R.id.idDevice);
             name = itemView.findViewById(R.id.nameDevice);
             premmium = itemView.findViewById(R.id.insuranceAmountDevice);
+            mnthlyPremmium = itemView.findViewById(R.id.insuranceAmountDeviceMonth);
             timeInsured = itemView.findViewById(R.id.timeInsured);
             image = itemView.findViewById(R.id.imageDevice);
             shield = itemView.findViewById(R.id.imageInsurance);
@@ -265,6 +267,9 @@ public class AdapterDeviceRecycler extends RecyclerView.Adapter {
                 @Override
                 public void finish(Double resultado) {
                     String precio = "$ " + resultado.toString() + " /día";
+                    Double monthlyPrice = (double) Math.round((resultado * 30) * 0.8);
+                    String monthlyPrecio = "$ " + String.valueOf(monthlyPrice) + "/mes";
+                    mnthlyPremmium.setText(monthlyPrecio);
                     premmium.setText(precio);
                 }
             });

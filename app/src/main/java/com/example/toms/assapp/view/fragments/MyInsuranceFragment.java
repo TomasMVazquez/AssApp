@@ -111,6 +111,7 @@ public class MyInsuranceFragment extends Fragment implements AdapterDeviceRecycl
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         adapterDeviceRecycler.noRemoverEquipo(device,position);
+                        getActivity().recreate();
                     }
                 });
 
