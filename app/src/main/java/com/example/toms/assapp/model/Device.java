@@ -1,5 +1,6 @@
 package com.example.toms.assapp.model;
 
+import java.util.Date;
 import java.util.List;
 
 public class Device {
@@ -17,6 +18,7 @@ public class Device {
     private Boolean finalVerification;
     private String insuranceDate;
     private Integer daysToInsure;
+    private Integer hoursToInsure;
 
     //consturctores
 
@@ -25,7 +27,7 @@ public class Device {
 
     public Device(String id, String typeDevice, String name, String make, String model,
                   String salesDate, List<String> photoList, Boolean insured, Boolean finalVerification,
-                  String insuranceDate,String imei, Integer daysToInsure) {
+                  String insuranceDate,String imei, Integer daysToInsure,Integer hoursToInsure) {
         this.id = id;
         this.typeDevice = typeDevice;
         this.name = name;
@@ -38,6 +40,7 @@ public class Device {
         this.insuranceDate = insuranceDate;
         this.imei = imei;
         this.daysToInsure = daysToInsure;
+        this.hoursToInsure = hoursToInsure;
     }
 
     //getter
@@ -90,10 +93,19 @@ public class Device {
         return photoList;
     }
 
+    public Integer getHoursToInsure() {
+        return hoursToInsure;
+    }
+
+
     //setter
 
     public void setDaysToInsure(Integer daysToInsure) {
         this.daysToInsure = daysToInsure;
+    }
+
+    public void setHoursToInsure(Integer hoursToInsure) {
+        this.hoursToInsure = hoursToInsure;
     }
 
     public void setInsuranceDate(String insuranceDate) {

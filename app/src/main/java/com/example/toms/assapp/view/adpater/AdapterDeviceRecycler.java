@@ -33,8 +33,10 @@ import com.google.firebase.storage.StorageReference;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -134,6 +136,7 @@ public class AdapterDeviceRecycler extends RecyclerView.Adapter {
         private DatabaseReference idDeviceInsured;
         private DatabaseReference idinsuranceDate;
         private DatabaseReference idDaysToInsure;
+        private DatabaseReference idHoursToInsure;
         private DatabaseReference idVerif;
 
         public DeviceViewHolder(@NonNull final View itemView) {
@@ -278,34 +281,62 @@ public class AdapterDeviceRecycler extends RecyclerView.Adapter {
 
         public void daysCalculation(Device device){
             String insuranceDate = device.getInsuranceDate();
+
             Integer daysToInsure = device.getDaysToInsure();
+            Integer hoursToInsure = device.getHoursToInsure();
 
-            //TODO Revisar si es horas o dias
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-            Date myDate = null;
-            try {
-                myDate = dateFormat.parse(insuranceDate);
-            } catch (ParseException e) {
-                e.printStackTrace();
+            if (daysToInsure>0) {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                Date myDate = null;
+                try {
+                    myDate = dateFormat.parse(insuranceDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                Date today = new Date();
+
+                long timeDiff = today.getTime() - myDate.getTime();
+                TimeUnit unit = TimeUnit.DAYS;
+                long diference = unit.convert(timeDiff, TimeUnit.MILLISECONDS);
+                long daysRestantes = daysToInsure - diference;
+
+                if (daysRestantes <= 0) {
+                    cancelInsurance(device.getId());
+                    Toast.makeText(context, "Se acabó el tiempo del seguro para su equipo " + device.getName(), Toast.LENGTH_SHORT).show();
+                } else {
+                    switchInsurance.setChecked(true);
+                    shield.setVisibility(View.VISIBLE);
+                    String time = daysRestantes + " días restantes";
+                    timeInsured.setText(time);
+                }
+            }else if (hoursToInsure>0){
+                Date hourInsured = null;
+
+                SimpleDateFormat  format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                try {
+                    hourInsured = format.parse(insuranceDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                Date today = new Date();
+
+                long timeDiff = today.getTime() - hourInsured.getTime();
+                TimeUnit unit = TimeUnit.HOURS;
+                long diference = unit.convert(timeDiff, TimeUnit.MILLISECONDS);
+                long hoursRestantes = hoursToInsure - diference;
+
+                if (hoursRestantes <= 0) {
+                    cancelInsurance(device.getId());
+                    Toast.makeText(context, "Se acabó el tiempo del seguro para su equipo " + device.getName(), Toast.LENGTH_SHORT).show();
+                } else {
+                    switchInsurance.setChecked(true);
+                    shield.setVisibility(View.VISIBLE);
+                    String time = hoursRestantes + " horas restantes";
+                    timeInsured.setText(time);
+                }
             }
-
-            Date today = new Date();
-
-            long timeDiff = today.getTime() - myDate.getTime();
-            TimeUnit unit = TimeUnit.DAYS;
-            long diference = unit.convert(timeDiff, TimeUnit.MILLISECONDS);
-            long daysRestantes = daysToInsure - diference;
-
-            if (daysRestantes <= 0) {
-                cancelInsurance(device.getId());
-                Toast.makeText(context, "Se acabó el tiempo del seguro para su equipo " + device.getName(), Toast.LENGTH_SHORT).show();
-            } else {
-                switchInsurance.setChecked(true);
-                shield.setVisibility(View.VISIBLE);
-                String time = daysRestantes + " días restantes";
-                timeInsured.setText(time);
-            }
-
         }
 
         public void cancelInsurance(String idDevice){
@@ -313,11 +344,13 @@ public class AdapterDeviceRecycler extends RecyclerView.Adapter {
             idDeviceInsured = mReference.child(MainActivity.showId()).child(context.getResources().getString(R.string.device_reference_child)).child(idDevice).child("insured");
             idinsuranceDate = mReference.child(MainActivity.showId()).child(context.getResources().getString(R.string.device_reference_child)).child(idDevice).child("insuranceDate");
             idDaysToInsure = mReference.child(MainActivity.showId()).child(context.getResources().getString(R.string.device_reference_child)).child(idDevice).child("daysToInsure");
+            idHoursToInsure = mReference.child(MainActivity.showId()).child(context.getResources().getString(R.string.device_reference_child)).child(idDevice).child("hoursToInsure");
 
             shield.setVisibility(View.INVISIBLE);
             idDeviceInsured.setValue(false);
             idinsuranceDate.setValue("");
             idDaysToInsure.setValue(0);
+            idHoursToInsure.setValue(0);
             timeInsured.setText("");
             switchInsurance.setChecked(false);
         }

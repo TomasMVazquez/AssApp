@@ -68,8 +68,7 @@ public class HoursToInsureFragment extends Fragment {
                     Toast.makeText(getActivity(), "No puedes asegurar más de 24 horas, favor de contratar días", Toast.LENGTH_SHORT).show();
                 } else{
                     hours = Integer.valueOf(String.valueOf(crollerHoursChooser.getText()));
-                    Integer hoursMinut = hours * 60;
-                    fragmentInterfaceHour.confirmDays(id,hoursMinut);
+                    fragmentInterfaceHour.confirmHours(id,hours);
                     interfaceCloseHour.closeDialog();
                 }
             }
@@ -78,7 +77,7 @@ public class HoursToInsureFragment extends Fragment {
         btnCancelHour.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fragmentInterfaceHour.confirmDays(id,0);
+                fragmentInterfaceHour.confirmHours(id,0);
                 interfaceCloseHour.closeDialog();
             }
         });
@@ -87,7 +86,7 @@ public class HoursToInsureFragment extends Fragment {
     }
 
     public interface FragmentInterfaceHour{
-        public void confirmDays(String id,Integer days);
+        public void confirmHours(String id,Integer Hours);
     }
 
     public interface InterfaceCloseHour{

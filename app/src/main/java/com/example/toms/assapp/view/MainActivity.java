@@ -48,6 +48,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 public class MainActivity extends AppCompatActivity implements MyInsuranceFragment.OnFragmentNotify, DaysToInsureFragment.FragmentInterface, DaysToInsureFragment.InterfaceClose,
         MonthToInsureFragment.FragmentInterfaceMonth, MonthToInsureFragment.InterfaceCloseMonth,
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
     private DatabaseReference idDeviceInsured;
     private DatabaseReference idinsuranceDate;
     private DatabaseReference idDaysToInsure;
+    private DatabaseReference idHoursToInsure;
     private DatabaseReference idVerif;
 
     private FragmentDialog overlay;
@@ -85,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        new UCEHandler.Builder(this).build();
+        new UCEHandler.Builder(this).build();
 
         mAuth = FirebaseAuth.getInstance();
         //firebase
@@ -366,7 +368,7 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
     @Override
     public void confirmDays(String id, Integer days) {
             if (days>0){
-                confirmInsurance(id,days);
+                confirmInsurance(id,days,0);
             }else {
                 cancelInsurance(id);
                 Toast.makeText(getApplicationContext(), "Su seguro NO se activó", Toast.LENGTH_SHORT).show();
@@ -384,14 +386,16 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
         idDaysToInsure.setValue(0);
     }
 
-    public void confirmInsurance(String idDevice,Integer days){
+    public void confirmInsurance(String idDevice,Integer days,Integer hours){
         deviceDb = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice);
         idDeviceInsured = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice).child("insured");
         idinsuranceDate = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice).child("insuranceDate");
         idDaysToInsure = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice).child("daysToInsure");
+        idHoursToInsure = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice).child("hoursToInsure");
 
         idinsuranceDate.setValue(insureDay());
         idDaysToInsure.setValue(days);
+        idHoursToInsure.setValue(hours);
         idDeviceInsured.setValue(true);
     }
 
@@ -407,9 +411,39 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
         return insuranceDate;
     }
 
+    public String insureHour(){
+        SimpleDateFormat y = new SimpleDateFormat("yyyy");
+        SimpleDateFormat d = new SimpleDateFormat("dd");
+        SimpleDateFormat m = new SimpleDateFormat("MM");
+        SimpleDateFormat h = new SimpleDateFormat("HH");
+        SimpleDateFormat mm = new SimpleDateFormat("mm");
+        SimpleDateFormat s = new SimpleDateFormat("ss");
+        Date today = new Date();
+        String year = String.valueOf(Integer.valueOf(y.format(today)));
+        String day = d.format(today);
+        String month = m.format(today);
+        String hour = h.format(today);
+        String minute = mm.format(today);
+        String second = s.format(today);
+        String insuranceDateTime = (day + "/" + month + "/" + year + " " + hour + ":" + minute + ":" + second);
+
+        return insuranceDateTime;
+    }
+
     @Override
     public void closeDialog() {
         overlay.dismiss();
+    }
+
+    @Override
+    public void confirmHours(String idDevice, Integer hours) {
+        if (hours>0){
+            confirmInsurance(idDevice,0,hours);
+        }else {
+            cancelInsurance(idDevice);
+            Toast.makeText(getApplicationContext(), "Su seguro NO se activó", Toast.LENGTH_SHORT).show();
+        }
+        this.recreate();
     }
 }
 

@@ -149,7 +149,7 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
                 if (checkInfo()) {
                     Device newDevice = new Device("", deviceType, addName.getText().toString(),
                             addMake.getText().toString(), addModel.getText().toString(), "",
-                            photoList, false,false,"",imeiCel.getText().toString(),0);
+                            photoList, false,false,"",imeiCel.getText().toString(),0,0);
 
                     if (newDevice.getTypeDevice().equals("Celular")) {
                         checkImei(newDevice);
@@ -295,7 +295,7 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
         device.setId(idDataBase);
 
         idDevices.setValue(new Device(device.getId(),device.getTypeDevice(),device.getName(),device.getMake(),device.getModel()
-                ,device.getSalesDate(),device.getPhotoList(),device.getInsured(),device.getFinalVerification(),device.getInsuranceDate(),device.getImei(),0));
+                ,device.getSalesDate(),device.getPhotoList(),device.getInsured(),device.getFinalVerification(),device.getInsuranceDate(),device.getImei(),0,0));
     }
 
     //Permiso para sacar IMEI

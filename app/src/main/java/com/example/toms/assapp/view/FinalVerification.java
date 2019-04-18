@@ -82,6 +82,7 @@ public class FinalVerification extends AppCompatActivity implements DaysToInsure
     private DatabaseReference idDeviceInsured;
     private DatabaseReference idinsuranceDate;
     private DatabaseReference idDaysToInsure;
+    private DatabaseReference idHoursToInsure;
     private DatabaseReference idVerif;
 
     private Boolean statusVerificationDB = false;
@@ -503,9 +504,40 @@ public class FinalVerification extends AppCompatActivity implements DaysToInsure
         return insuranceDate;
     }
 
+    public String insureHour(){
+        SimpleDateFormat y = new SimpleDateFormat("yyyy");
+        SimpleDateFormat d = new SimpleDateFormat("dd");
+        SimpleDateFormat m = new SimpleDateFormat("MM");
+        SimpleDateFormat h = new SimpleDateFormat("HH");
+        SimpleDateFormat mm = new SimpleDateFormat("mm");
+        SimpleDateFormat s = new SimpleDateFormat("ss");
+        Date today = new Date();
+        String year = String.valueOf(Integer.valueOf(y.format(today)));
+        String day = d.format(today);
+        String month = m.format(today);
+        String hour = h.format(today);
+        String minute = mm.format(today);
+        String second = s.format(today);
+        String insuranceDateTime = (day + "/" + month + "/" + year + " " + hour + ":" + minute + ":" + second);
+
+        return insuranceDateTime;
+    }
+
     @Override
     public void closeDialog() {
         overlay.dismiss();
+    }
+
+    @Override
+    public void confirmHours(String idDevice, Integer hours) {
+        deviceDb = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice);
+        idDeviceInsured = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice).child("insured");
+        idinsuranceDate = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice).child("insuranceDate");
+        idHoursToInsure = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice).child("hoursToInsure");
+
+        idinsuranceDate.setValue(insureHour());
+        idHoursToInsure.setValue(hours);
+        idDeviceInsured.setValue(true);
     }
 
     //Date Picker Comands - for purchase date
