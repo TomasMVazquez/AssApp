@@ -23,4 +23,8 @@
         <item name="android:windowCloseOnTouchOutside">true</item>
 
     </style>
+
+    <style name="viewPagerTitleStrip">
+        <item name="android:textSize">18sp</item>
+    </style>
 </resources>

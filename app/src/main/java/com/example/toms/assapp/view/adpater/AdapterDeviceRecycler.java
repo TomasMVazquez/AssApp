@@ -198,8 +198,13 @@ public class AdapterDeviceRecycler extends RecyclerView.Adapter {
                 });
 
             } else {
-                cancelInsurance(idDevice.getText().toString());
-                Toast.makeText(context, "El seguro de su " + name.getText().toString() + " ah sido desactivado", Toast.LENGTH_SHORT).show();
+                //Saco para que no pueda desactivar ya que paga por adelantado
+//                cancelInsurance(idDevice.getText().toString());
+//                Toast.makeText(context, "El seguro de su " + name.getText().toString() + " ah sido desactivado", Toast.LENGTH_SHORT).show();
+
+                //Esta parte es para mantener el equipo activo sin que pueda desactivarlo manualmente
+                Toast.makeText(context, "El seguro de su " + name.getText().toString() + " no puede ser desactivado hasta no finalizar los días pagados", Toast.LENGTH_SHORT).show();
+                switchInsurance.setChecked(true);
             }
         }
 

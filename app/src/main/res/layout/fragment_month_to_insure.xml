@@ -4,10 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:theme="@style/dialogTheme"
+    tools:context=".view.fragments.MonthToInsureFragment"
     android:orientation="vertical"
     android:gravity="center"
-    android:theme="@style/dialogTheme"
-    tools:context=".view.fragments.DaysToInsureFragment">
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,12 +27,14 @@
             />
 
         <TextView
-            android:id="@+id/insurancePriceDays"
+            android:id="@+id/insurancePriceMonth"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="end"
-            android:layout_marginEnd="15dp"
+            android:layout_marginEnd="10dp"
             android:textSize="18sp"
+            android:maxLines="1"
+            android:minLines="1"
             tools:text="$ 50.5 /mes"
             android:textColor="@color/colorPrimary"
             />
@@ -40,18 +43,20 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/days_insure"
+        android:text="@string/month_insure"
         android:gravity="center"
         android:textSize="20sp"
         android:textColor="@color/colorBlack"
         />
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/textInputDays"
+        android:id="@+id/textInputMonths"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent">
+        android:layout_width="match_parent"
+        android:layout_marginBottom="35dp"
+        >
         <EditText
-            android:id="@+id/daysToInsure"
+            android:id="@+id/monthsToInsure"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number"
@@ -62,12 +67,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="5dp"
         android:layout_marginStart="2dp"
         android:layout_marginEnd="2dp"
         >
         <Button
-            android:id="@+id/btnCancel"
+            android:id="@+id/btnCancelMonth"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="50"
@@ -78,7 +82,7 @@
             android:textSize="18sp"
             />
         <Button
-            android:id="@+id/btnDays"
+            android:id="@+id/btnMonth"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="50"

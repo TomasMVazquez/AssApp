@@ -37,6 +37,8 @@ import com.bumptech.glide.Glide;
 import com.example.toms.assapp.R;
 import com.example.toms.assapp.model.Device;
 import com.example.toms.assapp.view.fragments.DaysToInsureFragment;
+import com.example.toms.assapp.view.fragments.FragmentDialog;
+import com.example.toms.assapp.view.fragments.MonthToInsureFragment;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -61,7 +63,8 @@ import java.util.concurrent.TimeUnit;
 
 import pl.aprilapps.easyphotopicker.EasyImage;
 
-public class FinalVerification extends AppCompatActivity implements DaysToInsureFragment.FragmentInterface{
+public class FinalVerification extends AppCompatActivity implements DaysToInsureFragment.FragmentInterface, DaysToInsureFragment.InterfaceClose,
+        MonthToInsureFragment.FragmentInterfaceMonth, MonthToInsureFragment.InterfaceCloseMonth{
 
     public static final String KEY_ID_DEVICE_DB = "db";
 
@@ -97,6 +100,7 @@ public class FinalVerification extends AppCompatActivity implements DaysToInsure
     private CardView cardViewImageOne;
     private LinearLayout imagenAgregada;
 
+    private FragmentDialog overlay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -245,12 +249,14 @@ public class FinalVerification extends AppCompatActivity implements DaysToInsure
 
     public void confirmDays(String id){
         Bundle bundle = new Bundle();
-        bundle.putString(DaysToInsureFragment.KEY_ID,id);
-        DaysToInsureFragment daysToInsureFragment = new DaysToInsureFragment();
-        daysToInsureFragment.setArguments(bundle);
-        daysToInsureFragment.setCancelable(false);
+        bundle.putString(FragmentDialog.KEY_ID,id);
         FragmentManager fragmentManager = getSupportFragmentManager();
-        daysToInsureFragment.show(fragmentManager,"days");
+
+        overlay = new FragmentDialog();
+        overlay.setArguments(bundle);
+        overlay.setCancelable(false);
+
+        overlay.show(fragmentManager, "FragmentDialog");
     }
 
     @Override
@@ -447,14 +453,6 @@ public class FinalVerification extends AppCompatActivity implements DaysToInsure
             }
         });
     }
-    public void esperarYCerrar(Integer milisegundos) {
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-
-            }
-        }, milisegundos);
-    }
 
     @Override
     public void confirmDays(String id, Integer days) {
@@ -501,6 +499,11 @@ public class FinalVerification extends AppCompatActivity implements DaysToInsure
         String month = m.format(today);
         String insuranceDate = (day + "/" + month + "/" + year);
         return insuranceDate;
+    }
+
+    @Override
+    public void closeDialog() {
+        overlay.dismiss();
     }
 
     //Date Picker Comands - for purchase date

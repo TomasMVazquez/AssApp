@@ -12,6 +12,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -36,13 +37,15 @@ import java.util.concurrent.TimeUnit;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DaysToInsureFragment extends DialogFragment {
+public class DaysToInsureFragment extends Fragment {
 
-    public static final String KEY_ID="id";
+//    public static final String KEY_ID="id";
 
     //Atributos
     private Integer days;
     private String id;
+    private Double price;
+    private String dayPrice;
 
     public DaysToInsureFragment() {
         // Required empty public constructor
@@ -56,14 +59,20 @@ public class DaysToInsureFragment extends DialogFragment {
         View view = inflater.inflate(R.layout.fragment_days_to_insure, container, false);
 
         Bundle bundle = getArguments();
-        id = bundle.getString(KEY_ID);
+        id = bundle.getString(FragmentDialog.KEY_ID);
+        price = bundle.getDouble(FragmentDialog.KEY_PRICE);
+        dayPrice = "$ " + String.valueOf(price) + "/día";
 
-        TextInputLayout textInputDays = view.findViewById(R.id.textInputDays);
+        TextView insurancePriceDays = view.findViewById(R.id.insurancePriceDays);
+        insurancePriceDays.setText(dayPrice);
+
+        final TextInputLayout textInputDays = view.findViewById(R.id.textInputDays);
         final EditText daysToInsure = view.findViewById(R.id.daysToInsure);
-        ImageButton btnDays = view.findViewById(R.id.btnDays);
-        ImageButton btnCancel = view.findViewById(R.id.btnCancel);
+        Button btnDays = view.findViewById(R.id.btnDays);
+        Button btnCancel = view.findViewById(R.id.btnCancel);
 
         daysToInsure.setText("30");
+        textInputDays.setError("");
         daysToInsure.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -77,28 +86,30 @@ public class DaysToInsureFragment extends DialogFragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                //Integer days = Integer.valueOf(String.valueOf(daysToInsure.getText()));
-//                if (days>30){
-                    //TODO ver si se puede o no asegurar mas de 30 dias
-//                }else {
-//
-//                }
+                if (!String.valueOf(s).equals("")) {
+                    if (Integer.valueOf(String.valueOf(s)) > 30) {
+                        textInputDays.setError("No puedes asegurar más de 30 días, favor de contratar mensualisado");
+                    } else {
+                        textInputDays.setError("");
+                    }
+                }
             }
         });
 
         final FragmentInterface fragmentInterface = (FragmentInterface) getActivity();
+        final InterfaceClose interfaceClose = (InterfaceClose) getActivity();
 
         btnDays.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (daysToInsure.getText().equals("")){
+                if (daysToInsure.getText().toString().equals("")){
                     Toast.makeText(getContext(), "Debes elegir una cantidad de días para asegurar tu equipo", Toast.LENGTH_SHORT).show();
-                }else {
+                }else if (Integer.valueOf(daysToInsure.getText().toString()) > 30){
+                    Toast.makeText(getActivity(), "No puedes asegurar más de 30 días, favor de contratar mensualisado", Toast.LENGTH_SHORT).show();
+                } else{
                     days = Integer.valueOf(String.valueOf(daysToInsure.getText()));
-//                    insure(days);
-                    fragmentInterface.confirmDays(id,days);
-                    Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction().remove(DaysToInsureFragment.this).commit();
-
+                    fragmentInterface.confirmDays(id, days);
+                    interfaceClose.closeDialog();
                 }
             }
         });
@@ -106,9 +117,9 @@ public class DaysToInsureFragment extends DialogFragment {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                confirmDays(id,0);
                 fragmentInterface.confirmDays(id,0);
-                Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction().remove(DaysToInsureFragment.this).commit();
+                interfaceClose.closeDialog();
+
             }
         });
 
@@ -120,5 +131,8 @@ public class DaysToInsureFragment extends DialogFragment {
         public void confirmDays(String id,Integer days);
     }
 
+    public interface InterfaceClose{
+        void closeDialog();
+    }
 
 }

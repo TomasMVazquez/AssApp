@@ -27,6 +27,8 @@ import com.example.toms.assapp.R;
 import com.example.toms.assapp.model.Device;
 import com.example.toms.assapp.util.Util;
 import com.example.toms.assapp.view.fragments.DaysToInsureFragment;
+import com.example.toms.assapp.view.fragments.FragmentDialog;
+import com.example.toms.assapp.view.fragments.MonthToInsureFragment;
 import com.example.toms.assapp.view.fragments.MyInsuranceFragment;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
@@ -46,7 +48,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements MyInsuranceFragment.OnFragmentNotify, DaysToInsureFragment.FragmentInterface {
+public class MainActivity extends AppCompatActivity implements MyInsuranceFragment.OnFragmentNotify, DaysToInsureFragment.FragmentInterface, DaysToInsureFragment.InterfaceClose,
+        MonthToInsureFragment.FragmentInterfaceMonth, MonthToInsureFragment.InterfaceCloseMonth {
 
     public static final int KEY_LOGIN=101;
     public static final String KEY_NAME = "name";
@@ -64,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
     private DatabaseReference idDaysToInsure;
     private DatabaseReference idVerif;
 
+    private FragmentDialog overlay;
+
     private static String idDataBase;
 
     @Override
@@ -78,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        new UCEHandler.Builder(this).build();
+//        new UCEHandler.Builder(this).build();
 
         mAuth = FirebaseAuth.getInstance();
         //firebase
@@ -341,12 +346,14 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
     @Override
     public void cargarDias(String id) {
         Bundle bundle = new Bundle();
-        bundle.putString(DaysToInsureFragment.KEY_ID,id);
-        DaysToInsureFragment daysToInsureFragment = new DaysToInsureFragment();
-        daysToInsureFragment.setArguments(bundle);
-        daysToInsureFragment.setCancelable(false);
+        bundle.putString(FragmentDialog.KEY_ID,id);
         FragmentManager fragmentManager = getSupportFragmentManager();
-        daysToInsureFragment.show(fragmentManager,"days");
+
+        overlay = new FragmentDialog();
+        overlay.setArguments(bundle);
+        overlay.setCancelable(false);
+
+        overlay.show(fragmentManager, "FragmentDialog");
     }
 
 
@@ -396,6 +403,11 @@ public class MainActivity extends AppCompatActivity implements MyInsuranceFragme
         String month = m.format(today);
         String insuranceDate = (day + "/" + month + "/" + year);
         return insuranceDate;
+    }
+
+    @Override
+    public void closeDialog() {
+        overlay.dismiss();
     }
 }
 

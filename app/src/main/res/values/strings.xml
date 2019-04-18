@@ -79,5 +79,9 @@
 
     //DaysToInsure
     <string name="days_insure">¿Cuantos días quiere asegurar su equipo?</string>
+    <string name="month_insure">¿Cuantos meses quiere asegurar su equipo?</string>
+    <string name="contratar">contratar</string>
+    <string name="cancelar">cancelar</string>
+
 
 </resources>
