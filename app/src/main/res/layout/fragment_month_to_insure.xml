@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:theme="@style/dialogTheme"
     tools:context=".view.fragments.MonthToInsureFragment"
     android:orientation="vertical"
-    android:gravity="center"
-    >
+    android:gravity="center">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -41,32 +41,47 @@
     </LinearLayout>
 
     <TextView
+        android:text="@string/month_insure"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/month_insure"
         android:gravity="center"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:textColor="@color/colorBlack"
+        android:layout_marginBottom="5dp"
+        />
+    <TextView
+        android:id="@+id/crollerMonthsChooser"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        tools:text="2"
+        android:textSize="20sp"
+        android:textColor="@color/colorPrimaryDark"
         />
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/textInputMonths"
-        android:layout_height="wrap_content"
+    <com.sdsmdg.harjot.crollerTest.Croller
+        android:id="@+id/croller"
         android:layout_width="match_parent"
-        android:layout_marginBottom="35dp"
-        >
-        <EditText
-            android:id="@+id/monthsToInsure"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            />
-    </android.support.design.widget.TextInputLayout>
+        android:layout_height="300dp"
+        app:label=""
+        app:back_circle_color="@color/colorGreyLight"
+        app:indicator_color="@color/colorGrey"
+        app:indicator_width="10"
+        app:is_continuous="false"
+        app:label_color="@color/transparencia"
+        app:main_circle_color="@color/colorWhite"
+        app:max="12"
+        app:progress_primary_color="@color/colorAccentGreen"
+        app:progress_secondary_color="@color/colorAccentOrange"
+        app:progress_primary_circle_size="10"
+        app:progress_secondary_circle_size="5"
+        app:start_offset="45" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_marginTop="5dp"
         android:layout_marginStart="2dp"
         android:layout_marginEnd="2dp"
         >

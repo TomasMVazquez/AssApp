@@ -53,8 +53,8 @@ public class FragmentDialog extends DialogFragment implements DaysToInsureFragme
     public void onResume() {
         super.onResume();
         ViewGroup.LayoutParams params = getDialog().getWindow().getAttributes();
-        params.width = 700; //ViewGroup.LayoutParams.MATCH_PARENT //650 o 700
-        params.height = 680; //ViewGroup.LayoutParams.MATCH_PARENT //650 o 550
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT; //ViewGroup.LayoutParams.MATCH_PARENT //700
+        params.height = ViewGroup.LayoutParams.MATCH_PARENT; //ViewGroup.LayoutParams.MATCH_PARENT //680
         getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
     }
 

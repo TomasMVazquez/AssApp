@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.toms.assapp.R;
+import com.sdsmdg.harjot.crollerTest.Croller;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -43,6 +44,9 @@ public class MonthToInsureFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_month_to_insure, container, false);
 
+        final TextView crollerMonthsChooser = view.findViewById(R.id.crollerMonthsChooser);
+        Croller croller = view.findViewById(R.id.croller);
+
         Bundle bundle = getArguments();
         id = bundle.getString(FragmentDialog.KEY_ID);
         price = bundle.getDouble(FragmentDialog.KEY_PRICE);
@@ -52,49 +56,56 @@ public class MonthToInsureFragment extends Fragment {
         TextView insurancePriceMonth = view.findViewById(R.id.insurancePriceMonth);
         insurancePriceMonth.setText(monthPrice);
 
-        final TextInputLayout textInputMonths = view.findViewById(R.id.textInputMonths);
-        final EditText monthsToInsure = view.findViewById(R.id.monthsToInsure);
+        croller.setOnProgressChangedListener(new Croller.onProgressChangedListener() {
+            @Override
+            public void onProgressChanged(int progress) {
+                crollerMonthsChooser.setText(String.valueOf(progress));
+            }
+        });
+
+//        final TextInputLayout textInputMonths = view.findViewById(R.id.textInputMonths);
+//        final EditText monthsToInsure = view.findViewById(R.id.monthsToInsure);
         Button btnMonth = view.findViewById(R.id.btnMonth);
         Button btnCancelMonth = view.findViewById(R.id.btnCancelMonth);
 
         final FragmentInterfaceMonth fragmentInterfaceMonth = (FragmentInterfaceMonth) getActivity();
         final InterfaceCloseMonth interfaceCloseMonth = (InterfaceCloseMonth) getActivity();
 
-        monthsToInsure.setText("12");
-        textInputMonths.setError("");
-
-        monthsToInsure.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (!String.valueOf(s).equals("")) {
-                    if (Integer.valueOf(String.valueOf(s)) > 12) {
-                        textInputMonths.setError("No puedes asegurar más de 12 meses");
-                    } else {
-                        textInputMonths.setError("");
-                    }
-                }
-            }
-        });
+//        monthsToInsure.setText("12");
+//        textInputMonths.setError("");
+//
+//        monthsToInsure.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//                if (!String.valueOf(s).equals("")) {
+//                    if (Integer.valueOf(String.valueOf(s)) > 12) {
+//                        textInputMonths.setError("No puedes asegurar más de 12 meses");
+//                    } else {
+//                        textInputMonths.setError("");
+//                    }
+//                }
+//            }
+//        });
 
         btnMonth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (monthsToInsure.getText().toString().equals("")){
+                if (crollerMonthsChooser.getText().toString().equals("")){
                     Toast.makeText(getContext(), "Debes elegir una cantidad de meses para asegurar tu equipo", Toast.LENGTH_SHORT).show();
-                }else if (Integer.valueOf(monthsToInsure.getText().toString()) > 12) {
+                }else if (Integer.valueOf(crollerMonthsChooser.getText().toString()) > 12) {
                     Toast.makeText(getActivity(), "No puedes asegurar más de 12 meses", Toast.LENGTH_SHORT).show();
                 } else {
-                    fragmentInterfaceMonth.confirmDays(id, insureMonths(monthsToInsure.getText().toString()));
+                    fragmentInterfaceMonth.confirmDays(id, insureMonths(crollerMonthsChooser.getText().toString()));
                     interfaceCloseMonth.closeDialog();
                 }
             }

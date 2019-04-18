@@ -6,6 +6,7 @@
     <color name="colorGreenLight">#ccefd6</color>
     <color name="colorAccentOrange">#ff9f00</color>
     <color name="colorGrey">#787878</color>
+    <color name="colorGreyLight">#64787878</color>
     <color name="colorBlack">#000000</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="transparencia">#00ccefd6</color>

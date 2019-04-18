@@ -27,6 +27,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.sdsmdg.harjot.crollerTest.Croller;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -58,6 +59,9 @@ public class DaysToInsureFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_days_to_insure, container, false);
 
+        final TextView crollerDaysChooser = view.findViewById(R.id.crollerDaysChooser);
+        Croller crollerDays  = view.findViewById(R.id.crollerDays);
+
         Bundle bundle = getArguments();
         id = bundle.getString(FragmentDialog.KEY_ID);
         price = bundle.getDouble(FragmentDialog.KEY_PRICE);
@@ -66,35 +70,42 @@ public class DaysToInsureFragment extends Fragment {
         TextView insurancePriceDays = view.findViewById(R.id.insurancePriceDays);
         insurancePriceDays.setText(dayPrice);
 
-        final TextInputLayout textInputDays = view.findViewById(R.id.textInputDays);
-        final EditText daysToInsure = view.findViewById(R.id.daysToInsure);
+        crollerDays.setOnProgressChangedListener(new Croller.onProgressChangedListener() {
+            @Override
+            public void onProgressChanged(int progress) {
+                crollerDaysChooser.setText(String.valueOf(progress));
+            }
+        });
+
+//        final TextInputLayout textInputDays = view.findViewById(R.id.textInputDays);
+//        final EditText daysToInsure = view.findViewById(R.id.daysToInsure);
         Button btnDays = view.findViewById(R.id.btnDays);
         Button btnCancel = view.findViewById(R.id.btnCancel);
 
-        daysToInsure.setText("30");
-        textInputDays.setError("");
-        daysToInsure.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (!String.valueOf(s).equals("")) {
-                    if (Integer.valueOf(String.valueOf(s)) > 30) {
-                        textInputDays.setError("No puedes asegurar más de 30 días, favor de contratar mensualisado");
-                    } else {
-                        textInputDays.setError("");
-                    }
-                }
-            }
-        });
+//        daysToInsure.setText("30");
+//        textInputDays.setError("");
+//        daysToInsure.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//                if (!String.valueOf(s).equals("")) {
+//                    if (Integer.valueOf(String.valueOf(s)) > 30) {
+//                        textInputDays.setError("No puedes asegurar más de 30 días, favor de contratar mensualisado");
+//                    } else {
+//                        textInputDays.setError("");
+//                    }
+//                }
+//            }
+//        });
 
         final FragmentInterface fragmentInterface = (FragmentInterface) getActivity();
         final InterfaceClose interfaceClose = (InterfaceClose) getActivity();
@@ -102,12 +113,12 @@ public class DaysToInsureFragment extends Fragment {
         btnDays.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (daysToInsure.getText().toString().equals("")){
+                if (crollerDaysChooser.getText().toString().equals("")){
                     Toast.makeText(getContext(), "Debes elegir una cantidad de días para asegurar tu equipo", Toast.LENGTH_SHORT).show();
-                }else if (Integer.valueOf(daysToInsure.getText().toString()) > 30){
+                }else if (Integer.valueOf(crollerDaysChooser.getText().toString()) > 30){
                     Toast.makeText(getActivity(), "No puedes asegurar más de 30 días, favor de contratar mensualisado", Toast.LENGTH_SHORT).show();
                 } else{
-                    days = Integer.valueOf(String.valueOf(daysToInsure.getText()));
+                    days = Integer.valueOf(String.valueOf(crollerDaysChooser.getText()));
                     fragmentInterface.confirmDays(id, days);
                     interfaceClose.closeDialog();
                 }
