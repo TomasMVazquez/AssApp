@@ -460,7 +460,7 @@ public class FinalVerification extends AppCompatActivity implements DaysToInsure
     @Override
     public void confirmDays(String id, Integer days) {
         if (days>0){
-            confirmInsurance(id,days);
+            confirmInsurance(id,days,0);
             continueActivity();
         }else {
             cancelInsurance(id);
@@ -481,14 +481,16 @@ public class FinalVerification extends AppCompatActivity implements DaysToInsure
         idDaysToInsure.setValue(0);
     }
 
-    public void confirmInsurance(String idDevice,Integer days){
+    public void confirmInsurance(String idDevice,Integer days,Integer hours){
         deviceDb = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice);
         idDeviceInsured = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice).child("insured");
         idinsuranceDate = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice).child("insuranceDate");
         idDaysToInsure = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice).child("daysToInsure");
+        idHoursToInsure = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice).child("hoursToInsure");
 
         idinsuranceDate.setValue(insureDay());
         idDaysToInsure.setValue(days);
+        idHoursToInsure.setValue(hours);
         idDeviceInsured.setValue(true);
     }
 
@@ -530,14 +532,16 @@ public class FinalVerification extends AppCompatActivity implements DaysToInsure
 
     @Override
     public void confirmHours(String idDevice, Integer hours) {
-        deviceDb = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice);
-        idDeviceInsured = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice).child("insured");
-        idinsuranceDate = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice).child("insuranceDate");
-        idHoursToInsure = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice).child("hoursToInsure");
-
-        idinsuranceDate.setValue(insureHour());
-        idHoursToInsure.setValue(hours);
-        idDeviceInsured.setValue(true);
+        if (hours>0){
+            confirmInsurance(id,0,hours);
+            continueActivity();
+        }else {
+            cancelInsurance(id);
+            Toast.makeText(getApplicationContext(), "Su seguro NO se activó", Toast.LENGTH_SHORT).show();
+            setResult(Activity.RESULT_CANCELED);
+            finish();
+        }
+        this.recreate();
     }
 
     //Date Picker Comands - for purchase date
