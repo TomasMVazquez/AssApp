@@ -44,7 +44,7 @@ public class HoursToInsureFragment extends Fragment {
         Bundle bundle = getArguments();
         id = bundle.getString(FragmentDialog.KEY_ID);
         price = bundle.getDouble(FragmentDialog.KEY_PRICE);
-        Double hourlyPrice = (double) Math.round(price * 1.3);
+        Double hourlyPrice = (double) Math.round(price * 0.3);
         hourPrice = "$ " + String.valueOf(hourlyPrice) + "/hour";
 
         insurancePriceHours.setText(hourPrice);

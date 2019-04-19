@@ -488,7 +488,12 @@ public class FinalVerification extends AppCompatActivity implements DaysToInsure
         idDaysToInsure = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice).child("daysToInsure");
         idHoursToInsure = mReference.child(MainActivity.showId()).child(this.getResources().getString(R.string.device_reference_child)).child(idDevice).child("hoursToInsure");
 
-        idinsuranceDate.setValue(insureDay());
+        if (days>0){
+            idinsuranceDate.setValue(insureDay());
+        }else if (hours>0){
+            idinsuranceDate.setValue(insureHour());
+        }
+
         idDaysToInsure.setValue(days);
         idHoursToInsure.setValue(hours);
         idDeviceInsured.setValue(true);
