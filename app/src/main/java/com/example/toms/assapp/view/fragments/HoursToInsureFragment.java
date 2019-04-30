@@ -13,6 +13,8 @@ import android.widget.Toast;
 import com.example.toms.assapp.R;
 import com.sdsmdg.harjot.crollerTest.Croller;
 
+import java.text.DecimalFormat;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -35,7 +37,7 @@ public class HoursToInsureFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_hours_to_insure, container, false);
 
-        TextView insurancePriceHours = view.findViewById(R.id.insurancePriceHours);
+        final TextView insurancePriceHours = view.findViewById(R.id.insurancePriceHours);
         final TextView crollerHoursChooser = view.findViewById(R.id.crollerHoursChooser);
         Croller crollerHours = view.findViewById(R.id.crollerHours);
         Button btnHour = view.findViewById(R.id.btnHour);
@@ -44,15 +46,15 @@ public class HoursToInsureFragment extends Fragment {
         Bundle bundle = getArguments();
         id = bundle.getString(FragmentDialog.KEY_ID);
         price = bundle.getDouble(FragmentDialog.KEY_PRICE);
-        Double hourlyPrice = (double) Math.round(price * 0.3);
-        hourPrice = "$ " + String.valueOf(hourlyPrice) + "/hour";
-
-        insurancePriceHours.setText(hourPrice);
+        final DecimalFormat format = new DecimalFormat("##.#");
 
         crollerHours.setOnProgressChangedListener(new Croller.onProgressChangedListener() {
             @Override
             public void onProgressChanged(int progress) {
                 crollerHoursChooser.setText(String.valueOf(progress));
+                Double hourlyPrice = Double.valueOf(format.format((price * 0.05)*progress));
+                hourPrice = "$ " + String.valueOf(hourlyPrice);
+                insurancePriceHours.setText(hourPrice);
             }
         });
 

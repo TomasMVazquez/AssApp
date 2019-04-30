@@ -64,21 +64,31 @@
                 />
 
             <TextView
-                android:id="@+id/insuranceAmountDevice"
+                android:id="@+id/insuranceAmountDeviceHours"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="15dp"
+                android:textSize="12dp"
                 tools:text="$ 5000.00"
                 android:layout_toEndOf="@id/imageInsurance"
                 android:layout_below="@id/nameDevice"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="2dp"
+                android:textColor="@color/colorPrimaryDark"
+                />
+            <TextView
+                android:id="@+id/insuranceAmountDevice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12dp"
+                tools:text="$ 5000.00"
+                android:layout_toEndOf="@id/imageInsurance"
+                android:layout_below="@id/insuranceAmountDeviceHours"
                 android:textColor="@color/colorPrimaryDark"
                 />
             <TextView
                 android:id="@+id/insuranceAmountDeviceMonth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="15dp"
+                android:textSize="12dp"
                 tools:text="$ 5000.00"
                 android:layout_toEndOf="@id/imageInsurance"
                 android:layout_below="@id/insuranceAmountDevice"

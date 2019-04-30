@@ -170,7 +170,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/uif_activity"
-                    android:inputType="text"
+                    android:inputType="textCapWords"
                     />
             </android.support.design.widget.TextInputLayout>
 
@@ -185,7 +185,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/uif_maritial"
-                    android:inputType="text"
+                    android:inputType="textCapWords"
                     />
             </android.support.design.widget.TextInputLayout>
 

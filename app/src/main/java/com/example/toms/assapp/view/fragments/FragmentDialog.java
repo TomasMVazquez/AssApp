@@ -100,9 +100,9 @@ public class FragmentDialog extends DialogFragment implements DaysToInsureFragme
                         prog.dismiss();
                         // tab slider
                         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
-
                         // Set up the ViewPager with the sections adapter.
                         ViewPager viewPager = (ViewPager) view.findViewById(R.id.pager);
+
                         viewPager.setAdapter(sectionsPagerAdapter);
                         viewPager.setCurrentItem(1);
                     }
@@ -162,9 +162,9 @@ public class FragmentDialog extends DialogFragment implements DaysToInsureFragme
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "On Demand Hours";
+                    return "On Demand Horas";
                 case 1:
-                    return "On Demand Days";
+                    return "On Demand Días";
                 case 2:
                     return "Mensual";
             }

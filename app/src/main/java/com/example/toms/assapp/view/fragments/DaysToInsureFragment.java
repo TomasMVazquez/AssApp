@@ -61,19 +61,17 @@ public class DaysToInsureFragment extends Fragment {
 
         final TextView crollerDaysChooser = view.findViewById(R.id.crollerDaysChooser);
         Croller crollerDays  = view.findViewById(R.id.crollerDays);
-
-        Bundle bundle = getArguments();
+        final TextView insurancePriceDays = view.findViewById(R.id.insurancePriceDays);
+        final Bundle bundle = getArguments();
         id = bundle.getString(FragmentDialog.KEY_ID);
-        price = bundle.getDouble(FragmentDialog.KEY_PRICE);
-        dayPrice = "$ " + String.valueOf(price) + "/día";
-
-        TextView insurancePriceDays = view.findViewById(R.id.insurancePriceDays);
-        insurancePriceDays.setText(dayPrice);
 
         crollerDays.setOnProgressChangedListener(new Croller.onProgressChangedListener() {
             @Override
             public void onProgressChanged(int progress) {
                 crollerDaysChooser.setText(String.valueOf(progress));
+                price = bundle.getDouble(FragmentDialog.KEY_PRICE) * progress;
+                dayPrice = "$ " + String.valueOf(price);
+                insurancePriceDays.setText(dayPrice);
             }
         });
 

@@ -10,12 +10,35 @@
     android:orientation="vertical"
     android:gravity="center">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ir a On Demand Días"
+            android:layout_alignParentStart="true"
+            />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/gesture_swipe"
+            android:layout_centerInParent="true"
+            />
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="ir a On Demand Meses"-->
+            <!--android:layout_alignParentEnd="true"-->
+            <!--/>-->
+    </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginStart="15dp"
-        android:layout_marginBottom="15dp"
+        android:layout_marginBottom="5dp"
         android:layout_marginEnd="15dp"
         >
         <TextView
@@ -47,8 +70,8 @@
         android:gravity="center"
         android:textSize="18sp"
         android:textColor="@color/colorBlack"
-        android:layout_marginBottom="5dp"
         />
+
     <TextView
         android:id="@+id/crollerMonthsChooser"
         android:layout_width="match_parent"
@@ -62,7 +85,7 @@
     <com.sdsmdg.harjot.crollerTest.Croller
         android:id="@+id/croller"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="290dp"
         app:label=""
         app:back_circle_color="@color/colorGreyLight"
         app:indicator_color="@color/colorGrey"
@@ -81,7 +104,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="5dp"
         android:layout_marginStart="2dp"
         android:layout_marginEnd="2dp"
         >

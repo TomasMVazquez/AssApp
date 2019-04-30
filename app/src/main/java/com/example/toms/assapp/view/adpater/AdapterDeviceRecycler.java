@@ -31,6 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
@@ -128,6 +129,7 @@ public class AdapterDeviceRecycler extends RecyclerView.Adapter {
         private TextView name;
         private TextView premmium;
         private TextView mnthlyPremmium;
+        private TextView hourlyPremmium;
         private TextView timeInsured;
         private ImageView image;
         private ImageView shield;
@@ -146,6 +148,7 @@ public class AdapterDeviceRecycler extends RecyclerView.Adapter {
             name = itemView.findViewById(R.id.nameDevice);
             premmium = itemView.findViewById(R.id.insuranceAmountDevice);
             mnthlyPremmium = itemView.findViewById(R.id.insuranceAmountDeviceMonth);
+            hourlyPremmium = itemView.findViewById(R.id.insuranceAmountDeviceHours);
             timeInsured = itemView.findViewById(R.id.timeInsured);
             image = itemView.findViewById(R.id.imageDevice);
             shield = itemView.findViewById(R.id.imageInsurance);
@@ -264,14 +267,18 @@ public class AdapterDeviceRecycler extends RecyclerView.Adapter {
 
             idDevice.setText(device.getId());
             name.setText(device.getName());
+            final DecimalFormat format = new DecimalFormat("##.#");
 
             ControllerPricing controllerPricing = new ControllerPricing();
             controllerPricing.givePricing(device.getTypeDevice(), new ResultListener<Double>() {
                 @Override
                 public void finish(Double resultado) {
                     String precio = "$ " + resultado.toString() + " /día";
-                    Double monthlyPrice = (double) Math.round((resultado * 30) * 0.8);
+                    Double monthlyPrice = ((resultado * 30) * 0.8);
+                    Double hourlyPrice = Double.valueOf(format.format(resultado * 0.05));
                     String monthlyPrecio = "$ " + String.valueOf(monthlyPrice) + "/mes";
+                    String hourlyPrecio = "$ " + String.valueOf(hourlyPrice) + "/hora";
+                    hourlyPremmium.setText(hourlyPrecio);
                     mnthlyPremmium.setText(monthlyPrecio);
                     premmium.setText(precio);
                 }

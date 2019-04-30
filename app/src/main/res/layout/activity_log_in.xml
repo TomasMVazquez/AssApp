@@ -49,6 +49,7 @@
             android:id="@+id/textInputEmailSignIn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             >
             <EditText
                 android:id="@+id/etEmailSigIn"
@@ -65,12 +66,14 @@
             android:orientation="horizontal"
             android:weightSum="100"
             android:layout_marginBottom="15dp"
+            android:visibility="gone"
             >
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/textInputPassSignIn"
                 android:layout_width="0dp"
                 android:layout_weight="90"
                 android:layout_height="wrap_content"
+
                 >
                 <EditText
                     android:id="@+id/etPassSigIn"
@@ -100,6 +103,7 @@
             android:text="@string/or"
             android:textColor="@color/colorBlack"
             android:layout_marginBottom="15dp"
+            android:visibility="gone"
             />
 
 
