@@ -29,6 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sdsmdg.harjot.crollerTest.Croller;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -64,13 +65,14 @@ public class DaysToInsureFragment extends Fragment {
         final TextView insurancePriceDays = view.findViewById(R.id.insurancePriceDays);
         final Bundle bundle = getArguments();
         id = bundle.getString(FragmentDialog.KEY_ID);
+        final DecimalFormat format = new DecimalFormat("##.#");
 
         crollerDays.setOnProgressChangedListener(new Croller.onProgressChangedListener() {
             @Override
             public void onProgressChanged(int progress) {
                 crollerDaysChooser.setText(String.valueOf(progress));
                 price = bundle.getDouble(FragmentDialog.KEY_PRICE) * progress;
-                dayPrice = "$ " + String.valueOf(price);
+                dayPrice = "$ " + String.valueOf(format.format(price));
                 insurancePriceDays.setText(dayPrice);
             }
         });

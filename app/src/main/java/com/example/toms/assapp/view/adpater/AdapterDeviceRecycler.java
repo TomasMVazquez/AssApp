@@ -274,7 +274,7 @@ public class AdapterDeviceRecycler extends RecyclerView.Adapter {
                 @Override
                 public void finish(Double resultado) {
                     String precio = "$ " + resultado.toString() + " /día";
-                    Double monthlyPrice = ((resultado * 30) * 0.8);
+                    Double monthlyPrice = (double) Math.round((resultado * 30) * 0.8);
                     Double hourlyPrice = Double.valueOf(format.format(resultado * 0.05));
                     String monthlyPrecio = "$ " + String.valueOf(monthlyPrice) + "/mes";
                     String hourlyPrecio = "$ " + String.valueOf(hourlyPrice) + "/hora";
