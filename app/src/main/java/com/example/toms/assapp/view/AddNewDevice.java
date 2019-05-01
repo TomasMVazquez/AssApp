@@ -54,6 +54,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -196,16 +197,17 @@ public class AddNewDevice extends AppCompatActivity implements AdapterView.OnIte
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (position != 0) {
             deviceType = parent.getItemAtPosition(position).toString();
+            final DecimalFormat formating = new DecimalFormat("##.#");
 
             ControllerPricing controllerPricing = new ControllerPricing();
             controllerPricing.givePricing(deviceType, new ResultListener<Double>() {
                 @Override
                 public void finish(Double resultado) {
                     String price = "$ " + resultado + " /día";
-                    Double monthlyPrice = (double) Math.round((resultado * 30) * 0.8);
-                    String monthlyPrecio = "$ " + String.valueOf(monthlyPrice) + "/mes";
-                    Double hourlyPrice = (double) Math.round(resultado * 0.3);
-                    String hourPrice = "$ " + String.valueOf(hourlyPrice) + "/hora";
+                    Double monthlyPrice = (resultado * 30) * 0.8;
+                    String monthlyPrecio = "$ " + formating.format(monthlyPrice) + "/mes";
+                    Double hourlyPrice = resultado * 0.05;
+                    String hourPrice = "$ " + formating.format(hourlyPrice) + "/hora";
                     insurancePriceMonth.setText(monthlyPrecio);
                     insurancePrice.setText(price);
                     insurancePriceHour.setText(hourPrice);

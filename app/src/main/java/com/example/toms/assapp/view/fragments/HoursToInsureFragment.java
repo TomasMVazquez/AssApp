@@ -46,14 +46,14 @@ public class HoursToInsureFragment extends Fragment {
         Bundle bundle = getArguments();
         id = bundle.getString(FragmentDialog.KEY_ID);
         price = bundle.getDouble(FragmentDialog.KEY_PRICE);
-        final DecimalFormat format = new DecimalFormat("##.#");
+        final DecimalFormat formatting = new DecimalFormat("##.#");
 
         crollerHours.setOnProgressChangedListener(new Croller.onProgressChangedListener() {
             @Override
             public void onProgressChanged(int progress) {
                 crollerHoursChooser.setText(String.valueOf(progress));
-                Double hourlyPrice = Double.valueOf(format.format((price * 0.05)*progress));
-                hourPrice = "$ " + String.valueOf(hourlyPrice);
+                Double hourlyPrice = (price * 0.05)*progress;
+                hourPrice = "$ " + formatting.format(hourlyPrice);
                 insurancePriceHours.setText(hourPrice);
             }
         });

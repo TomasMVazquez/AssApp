@@ -267,17 +267,17 @@ public class AdapterDeviceRecycler extends RecyclerView.Adapter {
 
             idDevice.setText(device.getId());
             name.setText(device.getName());
-            final DecimalFormat format = new DecimalFormat("##.#");
+            final DecimalFormat formating = new DecimalFormat("##.#");
 
             ControllerPricing controllerPricing = new ControllerPricing();
             controllerPricing.givePricing(device.getTypeDevice(), new ResultListener<Double>() {
                 @Override
                 public void finish(Double resultado) {
                     String precio = "$ " + resultado.toString() + " /día";
-                    Double monthlyPrice = (double) Math.round((resultado * 30) * 0.8);
-                    Double hourlyPrice = Double.valueOf(format.format(resultado * 0.05));
-                    String monthlyPrecio = "$ " + String.valueOf(monthlyPrice) + "/mes";
-                    String hourlyPrecio = "$ " + String.valueOf(hourlyPrice) + "/hora";
+                    Double monthlyPrice = (resultado * 30) * 0.8;
+                    Double hourlyPrice = resultado * 0.05; //Double.valueOf(format.format(resultado * 0.05));
+                    String monthlyPrecio = "$ " + formating.format(monthlyPrice) + "/mes";
+                    String hourlyPrecio = "$ " + formating.format(hourlyPrice) + "/hora";
                     hourlyPremmium.setText(hourlyPrecio);
                     mnthlyPremmium.setText(monthlyPrecio);
                     premmium.setText(precio);
